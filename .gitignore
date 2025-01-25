@@ -1,0 +1,81 @@
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build directories
+target/
+build/
+!**/src/main/**/target/
+!**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+*.properties
+secrets/
+
+# Temp files
+*.bak
+*.swp
+*.sw?
+
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Gradle
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Maven
+!.mvn/wrapper/maven-wrapper.jar
+
+# Metadata
+.metadata/
+
+# Other
+HELP.md
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/

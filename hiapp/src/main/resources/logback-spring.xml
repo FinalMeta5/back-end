@@ -1,0 +1,41 @@
+<configuration>
+    <!-- UTF-8 인코딩 설정 -->
+    <property name="ENCODING" value="UTF-8" />
+    <!-- 콘솔에 로그 출력 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+        	<charset>${ENCODING}</charset> <!--인코딩 설정-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 로그를 파일에 저장 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 파일 롤링 정책 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 로그 파일 경로 : 날짜별로 새로운 로그 파일 생성 -->
+            <fileNamePattern>logs/hifiveapp-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 보관할 파일 수 (30일) -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+		    <maxFileSize>10MB</maxFileSize>
+		</triggeringPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <!-- 폴더 생성 옵션 추가 -->
+        	<immediateFlush>true</immediateFlush>
+        </encoder>
+    </appender>
+
+
+    <!-- 로그 레벨 설정 (개발 단계)
+    운영 단계에서는 콘솔은 warn, 파일은 info로 수정-->
+    <root level="info">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <logger name="com.hifive" level="debug" additivity="false">
+        <appender-ref ref="FILE" />
+    </logger>
+</configuration>
