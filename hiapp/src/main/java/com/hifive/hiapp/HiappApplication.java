@@ -4,9 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class HiappApplication {
+public class HiappApplication extends SpringBootServletInitializer {
+	
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(HiappApplication.class);
+	}
 
 	// 로깅 파일 저장 확인용
     private static final Logger logger = LoggerFactory.getLogger(HiappApplication.class);
