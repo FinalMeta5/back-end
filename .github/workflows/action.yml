@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  RESOURCE_PATH: ./src/main/resources/application.properties
+  RESOURCE_PATH: ./hiapp/src/main/resources/application.properties
 
 jobs:
   build-and-deploy:
