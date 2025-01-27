@@ -38,7 +38,6 @@ Thumbs.db
 
 # Environment files
 .env
-*.properties
 secrets/
 
 # Temp files
@@ -73,6 +72,10 @@ dist-ssr/
 
 # Metadata
 .metadata/
+
+# Secret Files
+**/src/main/resources/application-sec.properties
+**/src/test/resources/application-sec.properties
 
 # Other
 HELP.md
