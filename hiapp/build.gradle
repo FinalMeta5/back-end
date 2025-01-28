@@ -15,7 +15,7 @@ java {
 }
 
 war {
-	archiveFilename = 'hifive.war'
+	archiveFileName = 'hifive.war'
 }
 
 configurations {
