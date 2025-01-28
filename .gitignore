@@ -74,8 +74,8 @@ dist-ssr/
 .metadata/
 
 # Secret Files
-**/src/main/resources/application-sec.properties
-**/src/test/resources/application-sec.properties
+**/src/main/resources/application-sec.yml
+**/src/test/resources/application-sec.yml
 
 # Other
 HELP.md
