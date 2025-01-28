@@ -30,7 +30,7 @@ repositories {
 
 dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-web') {
-		exclude group 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
 	}
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	
