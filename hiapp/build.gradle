@@ -14,7 +14,7 @@ java {
 	}
 }
 
-war {
+bootWar {
 	archiveFileName = 'hifive.war'
 }
 

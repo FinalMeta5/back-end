@@ -39,7 +39,7 @@ jobs:
     - name: Build with Gradle
       run: |
         cd hiapp
-        ./gradlew build
+        ./gradlew clean bootWar
 
     - name: Docker Image build & Push to DockerHub
       run: |
