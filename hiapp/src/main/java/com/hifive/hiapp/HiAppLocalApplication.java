@@ -3,9 +3,7 @@ package com.hifive.hiapp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
 public class HiAppLocalApplication {
 	// 로깅 파일 저장 확인용
     private static final Logger logger = LoggerFactory.getLogger(HiappApplication.class);
