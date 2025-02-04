@@ -1,11 +1,9 @@
-package com.hifive.hiapp.service;
+package com.hifive.hiapp.domain.member.service;
 
-import java.util.List;
-
-import com.hifive.hiapp.dto.MemberDTO;
+import com.hifive.hiapp.domain.member.dto.SignupRequest;
+import com.hifive.hiapp.domain.member.dto.TokenDTO;
 
 public interface IMemberService {
-	List<MemberDTO> findAll();
-	int getMemberCount();
-	MemberDTO getMemberInfo(int memberId);
+	TokenDTO login(String email, String password);
+	Long signup(SignupRequest signupRequest);
 }

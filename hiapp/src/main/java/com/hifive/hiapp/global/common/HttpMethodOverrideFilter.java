@@ -1,4 +1,4 @@
-package com.hifive.hiapp.commons;
+package com.hifive.hiapp.global.common;
 
 import java.io.IOException;
 

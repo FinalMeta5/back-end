@@ -10,8 +10,19 @@ spring:
       - sec
     active: local
 
+  data:
+    redis:
+      port: 6379
+      host: localhost
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
+
 mybatis:
-  type-aliases-package: com.hifive.testapp
+  type-aliases-package: com.hifive.hiapp
   mapper-locations: classpath:mapper/**/*.xml
 
 server:
@@ -20,3 +31,13 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
+#    org.springframework: DEBUG
+
+jwt:
+  secret: x
+  access-token-validity: 1800 # 30 min
+  refresh-token-validity: 1728000 # 20 days
