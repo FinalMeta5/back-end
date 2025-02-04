@@ -1,15 +1,15 @@
-package com.hifive.hiapp.dao;
+package com.hifive.hiapp.domain.member.repository;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import com.hifive.hiapp.dto.MemberDTO;
+import com.hifive.hiapp.domain.member.dto.MemberDTO;
 
 @Repository
 @Mapper
-public interface IMemberRepository {
+public interface MemberMapper {
     // 전체 회원 조회
     List<MemberDTO> findAll();
 

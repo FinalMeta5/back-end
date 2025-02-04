@@ -1,4 +1,4 @@
-package com.hifive.hiapp.config;
+package com.hifive.hiapp.global.config;
 
 //import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
