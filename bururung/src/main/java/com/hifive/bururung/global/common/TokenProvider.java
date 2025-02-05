@@ -18,6 +18,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import com.hifive.bururung.global.exception.CustomException;
+import com.hifive.bururung.global.exception.errorcode.MemberErrorCode;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -75,12 +78,10 @@ public class TokenProvider implements InitializingBean{
             return true;
             
         }catch(ExpiredJwtException e){
-        	log.info("만료된 JWT");
+        	throw new CustomException(MemberErrorCode.EXPIRED_TOKEN);
         }catch(Exception e){
-        	log.info("잘못된 JWT");
+        	throw new CustomException(MemberErrorCode.MALFORMED_TOKEN);
         }
-        
-        return false;
     }
 	
     public Authentication getAuthentication(String token) {
