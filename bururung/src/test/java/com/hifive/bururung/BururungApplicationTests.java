@@ -1,10 +1,10 @@
-package com.hifive.hiapp;
+package com.hifive.bururung;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class HiappApplicationTests {
+class BururungApplicationTests {
 
 	@Test
 	void contextLoads() {
