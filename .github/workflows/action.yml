@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  RESOURCE_PATH: ./hiapp/src/main/resources/application.yml
+  RESOURCE_PATH: ./bururung/src/main/resources/application.yml
 
 jobs:
   build-and-deploy:
@@ -37,11 +37,11 @@ jobs:
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
     - name: Grant execute permission
-      run: chmod +x hiapp/gradlew
+      run: chmod +x bururung/gradlew
 
     - name: Build with Gradle
       run: |
-        cd hiapp
+        cd bururung
         ./gradlew clean bootWar
 
     - name: Docker Image build & Push to DockerHub
