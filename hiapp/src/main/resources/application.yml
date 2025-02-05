@@ -22,7 +22,7 @@ spring:
     open-in-view: false
 
 mybatis:
-  type-aliases-package: com.hifive.hiapp
+  type-aliases-package: com.hifive.bururung
   mapper-locations: classpath:mapper/**/*.xml
 
 server:
