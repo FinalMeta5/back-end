@@ -1,4 +1,4 @@
-package com.hifive.hiapp.controller;
+package com.hifive.bururung;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

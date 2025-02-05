@@ -35,7 +35,7 @@
         <appender-ref ref="CONSOLE" />
     </root>
 
-    <logger name="com.hifive" level="debug" additivity="false">
+    <logger name="com.hifive" level="debug" additivity="true">
         <appender-ref ref="FILE" />
     </logger>
 </configuration>
