@@ -28,6 +28,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/api/member/login").permitAll()
                                 .requestMatchers("/api/member/signup").permitAll()
+                                .requestMatchers("/api/email/**").permitAll()
+                                .requestMatchers("/api/member/find-email").permitAll()
+                                .requestMatchers("/api/member/change-password").permitAll()
                                 .requestMatchers("/error").permitAll()
                                 .anyRequest().authenticated()
                 )

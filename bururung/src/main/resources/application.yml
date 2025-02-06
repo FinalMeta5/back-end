@@ -21,6 +21,22 @@ spring:
     show-sql: true
     open-in-view: false
 
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: username
+    password: password
+    properties:
+      debug: true
+      mail:
+        stmp:
+          auth : true
+          starttls :
+            enable: true
+          ssl :
+            enable : true
+            trust : smtp.naver.com
+
 mybatis:
   type-aliases-package: com.hifive.bururung
   mapper-locations: classpath:mapper/**/*.xml

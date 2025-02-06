@@ -12,7 +12,8 @@ public enum MemberErrorCode implements ErrorCode {
 	EMAIL_AUTH_FAIL(HttpStatus.BAD_REQUEST, "이메일 인증 실패"),
 	MALFORMED_TOKEN(HttpStatus.UNAUTHORIZED, "올바르지 않은 토큰"),
 	EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰"),
-	UNAUTHORIZIED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다");
+	UNAUTHORIZIED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다"),
+	MAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "메일 전송이 실패했습니다");
 	
 	private final HttpStatus status;
 	private final String message;

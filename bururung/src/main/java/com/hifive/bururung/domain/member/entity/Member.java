@@ -72,4 +72,8 @@ public class Member {
 		this.creditCount = 2;
 		this.nickname = nickname;
 	}
+	
+	public void changePassword(String password) {
+		this.password = password;
+	}
 }
