@@ -32,6 +32,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         
         List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(member.getRoleName());
 
-        return new User(member.getEmail(), member.getPassword(), authorities);
+        return new User(String.valueOf(member.getMemberId()), member.getPassword(), authorities);
 	}
 }
