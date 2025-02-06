@@ -16,6 +16,8 @@ import com.hifive.bururung.domain.member.entity.Member;
 import com.hifive.bururung.domain.member.repository.MemberRepository;
 import com.hifive.bururung.global.common.RedisUtil;
 import com.hifive.bururung.global.common.TokenProvider;
+import com.hifive.bururung.global.exception.CustomException;
+import com.hifive.bururung.global.exception.errorcode.MemberErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -65,6 +67,24 @@ public class MemberService implements IMemberService {
 		return memberRepository.save(member).getMemberId();
 	}
 
+
+	@Override
+	public String findEmail(String name, String phone) {
+		return memberRepository.findEmailByNameAndPhone(name, phone)
+		.orElseThrow(() -> new CustomException(MemberErrorCode.USER_NOT_FOUND));
+	}
+
+	@Override
+	@Transactional
+	public Long changePassword(String email, String password) {
+		Member member = memberRepository.findByEmail(email)
+		.orElseThrow(() -> new CustomException(MemberErrorCode.USER_NOT_FOUND));
+		
+		member.changePassword(passwordEncoder.encode(password));
+		
+		return member.getMemberId();
+	}
+	
 	private void saveRefreshToken(String email, String refreshToken) {
 		redisUtil.setData(REFRESH_TOKEN_PREFIX + email, refreshToken, Duration.ofSeconds(refreshTokenValidity));
 	}
