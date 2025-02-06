@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hifive.bururung.domain.member.entity.Member;
 import com.hifive.bururung.domain.member.repository.MemberRepository;
+import com.hifive.bururung.global.exception.CustomException;
+import com.hifive.bururung.global.exception.errorcode.MemberErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(MemberErrorCode.USER_NOT_FOUND));
         
         List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(member.getRoleName());
 
