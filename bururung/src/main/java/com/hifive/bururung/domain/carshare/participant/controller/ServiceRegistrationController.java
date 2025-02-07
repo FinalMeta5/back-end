@@ -99,27 +99,4 @@ public class ServiceRegistrationController {
         }
     }
     
-    // 4. 차량 운행 정보
-    @PostMapping("/car-share-detail")
-    public ResponseEntity<Object> getCarShareDetailInformation(@RequestBody CarShareRequest carShareRequest) {
-
-        Long memberId = carShareRequest.getMemberId();
-        Long carShareRegiId = carShareRequest.getCarShareRegiId();
-
-        // 서비스 호출
-        DrivingInformation drivingInformation = carShareService.getDrivingInformation(memberId, carShareRegiId);
-
-        if (drivingInformation == null) {
-            String message = "(정보) 해당 사용자는 운전자로 등록되어 있지 않습니다. : " + memberId;
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(message); // 204 (No Content)
-        }
-
-        // 성공 메시지와 데이터를 body에 담아 반환
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "(성공) 운전 정보 조회에 성공하였습니다.");
-        response.put("drivingInformation", drivingInformation);
-
-        return ResponseEntity.ok(response); // OK (200)
-    }
-    
 }

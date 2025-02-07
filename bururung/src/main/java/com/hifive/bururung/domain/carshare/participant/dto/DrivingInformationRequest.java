@@ -7,9 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DrivingInformation {
-	private Double latitudePl;
-	private Double longitudePl;
-	private Double latitudeDs;
-	private Double longitudeDs;
+public class DrivingInformationRequest {
+	private Long memberId;
+	private Long carShareRegiId;
 }
