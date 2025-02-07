@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse;
-import com.hifive.bururung.domain.carshare.participant.dto.DrivingInformation;
 import com.hifive.bururung.domain.carshare.participant.repository.ServiceRegistrationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -38,11 +37,5 @@ public class ServiceRegistrationService implements IServiceRegistrationService{
 	@Override
 	public CarInformationResponse getCarInformation(Long memberId) {
 		return serviceRegistrationRepository.findCarInformation(memberId);
-	}
-
-	// 4. 차량 운행 정보
-	@Override
-	public DrivingInformation getDrivingInformation(Map<String, Object> params) {
-		return serviceRegistrationRepository.findDrivingInformation(params);
 	}
 }
