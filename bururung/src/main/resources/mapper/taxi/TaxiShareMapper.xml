@@ -73,6 +73,28 @@
 		OPENCHAT_LINK as "openchatLink",
 		OPENCHAT_CODE as "openchatCode"
 		from TAXI_SHARE
-		WHERE PICKUP_TIME = #{param1}
+		WHERE TRUNC(PICKUP_TIME) = #{param1}
+	</select>
+	
+	<select id="getTaxiShareById" resultType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
+	select TAXI_SHARE_ID as "taxiShareId",
+		MEMBER_ID as
+		"memberId",
+		PASSENGERS_NUM as "passengersNum",
+		PICKUP_LOCATION as
+		"pickupLocation",
+		LATITUDE_PL as "latitudePL",
+		LONGITUDE_PL as
+		"longitudePL",
+		PICKUP_TIME as "pickupTime",
+		STATUS as "status",
+		CREATED_DATE as "createdDate",
+		DESTINATION as "destination",
+		LATITUDE_DS as "latitudeDS",
+		LONGITUDE_DS as "longitudeDS",
+		OPENCHAT_LINK as "openchatLink",
+		OPENCHAT_CODE as "openchatCode"
+		from TAXI_SHARE
+		WHERE TAXI_SHARE_ID = #{param1}
 	</select>
 </mapper>

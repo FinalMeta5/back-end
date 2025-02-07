@@ -1,5 +1,6 @@
 package com.hifive.bururung.domain.taxi.service;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,18 @@ public class TaxiShareService implements ITaxiShareService{
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
+	}
+
+	@Override
+	public List<TaxiShare> getTaxiShareByPickupTime(String pickupTime) {
+		List<TaxiShare> list = taxiShareRepository.getTaxiShareByPickupTime(pickupTime);
+		return list;
+	}
+
+	@Override
+	public TaxiShare getTaxiShareById(Long taxiShareId) {
+		TaxiShare taxiShare = taxiShareRepository.getTaxiShareById(taxiShareId);
+		return taxiShare;
 	}
 	
 //	public TaxiShare getTaxiShareById(Long id) {
