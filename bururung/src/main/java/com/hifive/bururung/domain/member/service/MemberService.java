@@ -73,6 +73,16 @@ public class MemberService implements IMemberService {
 		return memberRepository.findEmailByNameAndPhone(name, phone)
 		.orElseThrow(() -> new CustomException(MemberErrorCode.USER_NOT_FOUND));
 	}
+	
+	@Override
+	public boolean checkMemberExists(Long memberId) {
+		return memberRepository.existsById(memberId);
+	}
+	
+	public Member findByMemberId(Long memberId) {
+	    return memberRepository.findById(memberId)
+	        .orElseThrow(() -> new CustomException(MemberErrorCode.USER_NOT_FOUND));
+	}
 
 	@Override
 	@Transactional
