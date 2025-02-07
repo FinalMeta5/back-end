@@ -1,11 +1,11 @@
-package com.hifive.bururung.domain.carshare.service_application.repository;
+package com.hifive.bururung.domain.carshare.participant.repository;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import com.hifive.bururung.domain.carshare.service_application.dto.AvailableCarShareListResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
 
 @Mapper
 @Repository

@@ -1,4 +1,4 @@
-package com.hifive.bururung.domain.carshare.service_application.dto;
+package com.hifive.bururung.domain.carshare.participant.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

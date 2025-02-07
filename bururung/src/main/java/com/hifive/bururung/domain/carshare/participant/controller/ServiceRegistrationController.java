@@ -1,4 +1,4 @@
-package com.hifive.bururung.domain.carshare.service_application.controller;
+package com.hifive.bururung.domain.carshare.participant.controller;
 
 import java.util.List;
 
@@ -7,11 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
+import com.hifive.bururung.domain.carshare.participant.service.IServiceRegistrationService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hifive.bururung.domain.carshare.service_application.dto.AvailableCarShareListResponse;
-import com.hifive.bururung.domain.carshare.service_application.service.IServiceRegistrationService;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.hifive.bururung.domain.carshare.service_application.service;
+package com.hifive.bururung.domain.carshare.participant.service;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hifive.bururung.domain.carshare.service_application.dto.AvailableCarShareListResponse;
-import com.hifive.bururung.domain.carshare.service_application.repository.ServiceRegistrationRepository;
+import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
+import com.hifive.bururung.domain.carshare.participant.repository.ServiceRegistrationRepository;
 
 import lombok.RequiredArgsConstructor;
 
