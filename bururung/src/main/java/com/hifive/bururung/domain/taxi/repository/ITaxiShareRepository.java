@@ -12,5 +12,6 @@ import com.hifive.bururung.domain.taxi.entity.TaxiShare;
 public interface ITaxiShareRepository {
 	List<TaxiShare> findAll();
 	void insertTaxiShare(TaxiShare taxiShare);
-	List<TaxiShare> getTaxiShareByPickupTime(Date pickupTime);
+	List<TaxiShare> getTaxiShareByPickupTime(String pickupTime);
+	TaxiShare getTaxiShareById(Long taxiShareId);
 }

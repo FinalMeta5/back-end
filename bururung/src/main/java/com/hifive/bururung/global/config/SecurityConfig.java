@@ -32,14 +32,11 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/api/member/login").permitAll()
-                                .requestMatchers("/api/member/signup").permitAll()
-                                .requestMatchers("/api/email/**").permitAll()
-                                .requestMatchers("/api/member/find-email").permitAll()
-                                .requestMatchers("/api/member/change-password").permitAll()
-                                .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
-                                .requestMatchers("/error").permitAll()
-                                .anyRequest().authenticated()
+//                                .requestMatchers("/api/member/login").permitAll()
+//                                .requestMatchers("/api/member/signup").permitAll()
+//                                .requestMatchers("/error").permitAll()
+//                                .anyRequest().authenticated()
+                		.requestMatchers("/**").permitAll()
                 )
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

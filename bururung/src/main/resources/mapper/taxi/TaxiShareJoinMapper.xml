@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.hifive.bururung.domain.taxi.repository.ITaxiShareJoinRepository">
+	<select id="getJoinCountByTaxiShareId" resultType="int">
+		select count(member_id) AS CNT
+		from taxi_share_join
+		where taxi_share_id = #{param1}
+		group by taxi_share_id
+	</select>
+
+	<insert id="insertTaxiShareJoin">
+		INSERT INTO TAXI_SHARE_JOIN (
+		TAXI_SHARE_ID, MEMBER_ID
+		) VALUES (#{param1}, #{param2});
+	</insert>
+
+	<delete id="deleteTaxiShareJoinById">
+		DELETE FROM TAXI_SHARE_JOIN WHERE TSJ_ID = #{param1};
+	</delete>
+
+	<select id="getDuplCntByTaxiShareIdAndMemberId" resultType="int">
+		select count(*)
+		from taxi_share_join
+		where taxi_share_id = #{param1} and member_id = #{param2}
+	</select>
+</mapper>
