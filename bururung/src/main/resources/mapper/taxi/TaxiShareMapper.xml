@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.hifive.bururung.domain.taxi.repository.ITaxiShareRepository">
+	<!-- 전체 택시쉐어 리스트 조회 -->
+	<select id="findAll" resultType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
+		select TAXI_SHARE_ID as "taxiShareId",
+		MEMBER_ID as
+		"memberId",
+		PASSENGERS_NUM as "passengersNum",
+		PICKUP_LOCATION as
+		"pickupLocation",
+		LATITUDE_PL as "latitudePL",
+		LONGITUDE_PL as
+		"longitudePL",
+		PICKUP_TIME as "pickupTime",
+		STATUS as "status",
+		CREATED_DATE as "createdDate",
+		DESTINATION as "destination",
+		LATITUDE_DS as "latitudeDS",
+		LONGITUDE_DS as "longitudeDS",
+		OPENCHAT_LINK as "openchatLink",
+		OPENCHAT_CODE as "openchatCode"
+		from TAXI_SHARE
+	</select>
+
+	<insert id="insertTaxiShare" parameterType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
+		INSERT INTO TAXI_SHARE (
+			MEMBER_ID, PASSENGERS_NUM, PICKUP_LOCATION,
+			LATITUDE_PL, LONGITUDE_PL, PICKUP_TIME, DESTINATION,
+			LATITUDE_DS, LONGITUDE_DS, OPENCHAT_LINK, OPENCHAT_CODE, ESTIMATED_AMOUNT, TIME_NEGO
+		) VALUES (
+		#{memberId}, #{passengersNum}, #{pickupLocation},
+		#{latitudePL}, #{longitudePL}, #{pickupTime}, #{destination}, #{latitudeDS}, #{longitudeDS},
+		#{openchatLink}, #{openchatCode}, #{estimatedAmount}, #{timeNego}
+		)
+	</insert>
+	
+	<update id="updateTaxiShare" parameterType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
+	UPDATE TAXI_SHARE
+    SET
+        PASSENGERS_NUM = #{passengersNum},
+        PICKUP_LOCATION = #{pickupLocation},
+        LATITUDE_PL = #{latitudePL},
+        LONGITUDE_PL = #{longitudePL},
+        PICKUP_TIME = #{pickupTime},
+        DESTINATION = #{destination},
+        LATITUDE_DS = #{latitudeDS},
+        LONGITUDE_DS = #{longitudeDS},
+        OPENCHAT_LINK = #{openchatLink},
+        OPENCHAT_CODE = #{openchatCode},
+        ESTIMATED_AMOUNT = #{estimatedAmount},
+        TIME_NEGO = #{timeNego}
+    WHERE TAXI_SHARE_ID = #{taxiShareId}
+	</update>
+	
+	<select id="getTaxiShareByPickupTime" resultType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
+	select TAXI_SHARE_ID as "taxiShareId",
+		MEMBER_ID as
+		"memberId",
+		PASSENGERS_NUM as "passengersNum",
+		PICKUP_LOCATION as
+		"pickupLocation",
+		LATITUDE_PL as "latitudePL",
+		LONGITUDE_PL as
+		"longitudePL",
+		PICKUP_TIME as "pickupTime",
+		STATUS as "status",
+		CREATED_DATE as "createdDate",
+		DESTINATION as "destination",
+		LATITUDE_DS as "latitudeDS",
+		LONGITUDE_DS as "longitudeDS",
+		OPENCHAT_LINK as "openchatLink",
+		OPENCHAT_CODE as "openchatCode"
+		from TAXI_SHARE
+		WHERE TRUNC(PICKUP_TIME) = #{param1}
+	</select>
+	
+	<select id="getTaxiShareById" resultType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
+	select TAXI_SHARE_ID as "taxiShareId",
+		MEMBER_ID as
+		"memberId",
+		PASSENGERS_NUM as "passengersNum",
+		PICKUP_LOCATION as
+		"pickupLocation",
+		LATITUDE_PL as "latitudePL",
+		LONGITUDE_PL as
+		"longitudePL",
+		PICKUP_TIME as "pickupTime",
+		STATUS as "status",
+		CREATED_DATE as "createdDate",
+		DESTINATION as "destination",
+		LATITUDE_DS as "latitudeDS",
+		LONGITUDE_DS as "longitudeDS",
+		OPENCHAT_LINK as "openchatLink",
+		OPENCHAT_CODE as "openchatCode"
+		from TAXI_SHARE
+		WHERE TAXI_SHARE_ID = #{param1}
+	</select>
+</mapper>

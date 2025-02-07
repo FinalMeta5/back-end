@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper SYSTEM "file:///C:/dev/workspace/finalmeta/backend/hiapp/src/main/resources/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hifive.bururung.domain.carshare.participant.repository.ServiceRegistrationRepository">
+	
+	<!-- 1. 현재 이용 가능한 공유 차량 목록 -->
+	<select id="findAvailableCarShareList" resultType="com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse">
+		SELECT DISTINCT csr.car_share_regi_id, m.nickname, csr.latitude_pl, csr.longitude_pl, csr.latitude_ds, csr.longitude_ds, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') AS pickup_date
+		FROM CAR_SHARE_REGISTRATION csr
+    		LEFT JOIN CAR_SHARE_JOIN csj
+        		ON csr.car_share_regi_id = csj.car_share_regi_id
+    		RIGHT JOIN MEMBER m
+        		ON csr.member_id = m.member_id
+		WHERE csr.pickup_date > LOCALTIMESTAMP
+    		AND csr.passengers_num > (
+                                SELECT COUNT(*)
+                                FROM CAR_SHARE_JOIN csj2
+                                WHERE csj2.CAR_SHARE_REGI_ID = csr.CAR_SHARE_REGI_ID
+		)
+	</select>
+	
+	<!-- 2. 운전자 정보 -->
+	<select id="findDriverInformation" parameterType="Long" resultType="com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse">
+		SELECT m.image_url, (EXTRACT(YEAR FROM LOCALTIMESTAMP) - EXTRACT(YEAR FROM TO_DATE(m.birth, 'YYYY-MM-DD'))) AS age, m.gender, cr.verified, m.nickname
+		FROM member m
+		JOIN car_registration cr ON m.member_id = cr.member_id
+		WHERE m.member_id = #{memberId}
+	</select>
+	
+	<!-- 3. 차량 정보 -->
+	<select id="findCarInformation" parameterType="Long" resultType="com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse">
+		SELECT car_model, car_number, color, car_description
+		FROM car_registration
+		WHERE member_id = #{memberId}
+	</select>
+	
+	<!-- 4. 차량 운행 정보 -->
+	<select id="findDrivingInformation" parameterType="Map" resultType="com.hifive.bururung.domain.carshare.participant.dto.DrivingInformation">
+		SELECT csr.latitude_pl, csr.longitude_pl, csr.latitude_ds, csr.longitude_ds, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') as pickup_date, csr.passengers_num, 
+        	   csr.passengers_num - (SELECT COUNT(*)
+                              		 FROM car_share_join
+                                     WHERE car_share_regi_id = 7) AS leftover_num
+        FROM car_share_registration csr
+        	LEFT JOIN car_share_join csj
+        		ON csr.car_share_regi_id = csj.car_share_regi_id
+		WHERE csr.member_id = #{memberId}
+    		AND csr.car_share_regi_id = #{carShareRegiId};
+	</select>
+</mapper>

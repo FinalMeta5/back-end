@@ -1,0 +1,59 @@
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    username: username
+    url: url
+    password: pw
+
+  profiles:
+    include: 
+      - sec
+    active: local
+
+  data:
+    redis:
+      port: 6379
+      host: localhost
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
+
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: username
+    password: password
+    properties:
+      debug: true
+      mail:
+        stmp:
+          auth : true
+          starttls :
+            enable: true
+          ssl :
+            enable : true
+            trust : smtp.naver.com
+
+mybatis:
+  type-aliases-package: com.hifive.bururung
+  mapper-locations: classpath:mapper/**/*.xml
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
+#    org.springframework: DEBUG
+
+jwt:
+  secret: x
+  access-token-validity: 1800 # 30 min
+  refresh-token-validity: 1728000 # 20 days
