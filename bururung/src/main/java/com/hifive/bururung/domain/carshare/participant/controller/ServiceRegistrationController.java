@@ -4,21 +4,35 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+import com.hifive.bururung.domain.carshare.organizer.entity.CarRegistration;
 import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.service.IServiceRegistrationService;
+import com.hifive.bururung.domain.member.entity.Member;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/carshare/registration")
+@CrossOrigin(origins = "http://localhost:3000")
+@Slf4j
 public class ServiceRegistrationController {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceRegistrationController.class);
@@ -31,16 +45,81 @@ public class ServiceRegistrationController {
         try {
             List<AvailableCarShareListResponse> availableCarList = registrationService.getAvailableCarShareList();
             
-            if (availableCarList.isEmpty()) {
-                // 예외 처리 : 내용이 없으면 204 상태 코드 반환
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if(availableCarList.isEmpty()) {
+            	log.info("(Info) No available cars to display");
+            	return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
             }
-            // 성공 처리 : 200 상태 코드와 함께 리스트 반환
-            return new ResponseEntity<>(availableCarList, HttpStatus.OK);
+            log.info("(Success) display shared car list.");
+            return ResponseEntity.ok(availableCarList);
         } catch (Exception e) {
-            // 예외 처리 : 500 상태 코드와 메시지 반환
-            logger.error("Error occurred while fetching available car share list", e);  // 예외 로그 찍기
+            log.error("(Fail) Error occurred while fetching available car share list : ", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+          } 
+    }
+    
+    // 2. 운전자 정보
+    @GetMapping("/driver-information/{memberId}")
+    public ResponseEntity<Object> getCarShareDetailInformation(@PathVariable("memberId") Long memberId) {
+    	try {
+    		DriverInformationResponse driverInformationResponse = registrationService.getDriverInformation(memberId);
+    		
+    		if (driverInformationResponse == null) {
+    			String message = "(정보) " + + memberId + "번 사용자는 운전자로 등록되어 있지 않습니다." ;
+            	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message); 
+            }
+    		
+            return ResponseEntity.ok(driverInformationResponse);
+        } catch (RuntimeException e) {
+        	String message = "(정보) " + + memberId + "번 사용자는 운전자로 등록되어 있지 않습니다." ;
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message); 
+    	} catch (Exception e) {
+            logger.error("운전자 정보를 조회하던 중 에러가 발생했습니다.");  
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    // 3. 차량 정보
+    @GetMapping("/car-information/{memberId}")
+    public ResponseEntity<Object> getCarInformation(@PathVariable("memberId") Long memberId) {
+    	try {
+    		CarInformationResponse carInformationResponse = registrationService.getCarInformation(memberId);
+    		
+    		if (carInformationResponse == null) {
+    			String message = "(정보) " + + memberId + "번 사용자의 차량은 등록되어 있지 않습니다." ;
+            	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message); 
+            }
+    		
+    		return ResponseEntity.ok(carInformationResponse);
+    	} catch (RuntimeException e) {
+    		String message = "(정보) " + + memberId + "번 사용자의 차량은 등록되어 있지 않습니다." ;
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message); 
+    	} catch (Exception e) {
+            logger.error("차량 정보를 조회하던 중 에러가 발생했습니다.");  
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    // 4. 차량 운행 정보
+    @PostMapping("/car-share-detail")
+    public ResponseEntity<Object> getCarShareDetailInformation(@RequestBody CarShareRequest carShareRequest) {
+
+        Long memberId = carShareRequest.getMemberId();
+        Long carShareRegiId = carShareRequest.getCarShareRegiId();
+
+        // 서비스 호출
+        DrivingInformation drivingInformation = carShareService.getDrivingInformation(memberId, carShareRegiId);
+
+        if (drivingInformation == null) {
+            String message = "(정보) 해당 사용자는 운전자로 등록되어 있지 않습니다. : " + memberId;
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(message); // 204 (No Content)
+        }
+
+        // 성공 메시지와 데이터를 body에 담아 반환
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "(성공) 운전 정보 조회에 성공하였습니다.");
+        response.put("drivingInformation", drivingInformation);
+
+        return ResponseEntity.ok(response); // OK (200)
+    }
+    
 }

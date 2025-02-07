@@ -18,4 +18,32 @@
                                 WHERE csj2.CAR_SHARE_REGI_ID = csr.CAR_SHARE_REGI_ID
 		)
 	</select>
+	
+	<!-- 2. 운전자 정보 -->
+	<select id="findDriverInformation" parameterType="Long" resultType="com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse">
+		SELECT m.image_url, (EXTRACT(YEAR FROM LOCALTIMESTAMP) - EXTRACT(YEAR FROM TO_DATE(m.birth, 'YYYY-MM-DD'))) AS age, m.gender, cr.verified, m.nickname
+		FROM member m
+		JOIN car_registration cr ON m.member_id = cr.member_id
+		WHERE m.member_id = #{memberId}
+	</select>
+	
+	<!-- 3. 차량 정보 -->
+	<select id="findCarInformation" parameterType="Long" resultType="com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse">
+		SELECT car_model, car_number, color, car_description
+		FROM car_registration
+		WHERE member_id = #{memberId}
+	</select>
+	
+	<!-- 4. 차량 운행 정보 -->
+	<select id="findDrivingInformation" parameterType="Map" resultType="com.hifive.bururung.domain.carshare.participant.dto.DrivingInformation">
+		SELECT csr.latitude_pl, csr.longitude_pl, csr.latitude_ds, csr.longitude_ds, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') as pickup_date, csr.passengers_num, 
+        	   csr.passengers_num - (SELECT COUNT(*)
+                              		 FROM car_share_join
+                                     WHERE car_share_regi_id = 7) AS leftover_num
+        FROM car_share_registration csr
+        	LEFT JOIN car_share_join csj
+        		ON csr.car_share_regi_id = csj.car_share_regi_id
+		WHERE csr.member_id = #{memberId}
+    		AND csr.car_share_regi_id = #{carShareRegiId};
+	</select>
 </mapper>
