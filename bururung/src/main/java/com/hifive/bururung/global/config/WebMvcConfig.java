@@ -33,6 +33,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:3000") // 허용할 Origin
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // 허용할 HTTP 메서드
                 .allowedHeaders("*") // 모든 헤더 허용
+                .exposedHeaders("accesstoken")
                 .allowCredentials(true); // 인증 정보 허용
     }
 
