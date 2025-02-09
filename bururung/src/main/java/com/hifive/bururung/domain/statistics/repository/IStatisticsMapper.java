@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.hifive.bururung.domain.statistics.dto.AgeGroupRatioResponse;
 import com.hifive.bururung.domain.statistics.dto.GenderRatioResponse;
+import com.hifive.bururung.domain.statistics.dto.MonthlyNewMemberResponse;
 
 @Repository
 @Mapper
@@ -15,4 +16,6 @@ public interface IStatisticsMapper {
 	List<GenderRatioResponse> getGenderCount();
 
 	List<AgeGroupRatioResponse> getAgeGroupRatio();
+	
+	List<MonthlyNewMemberResponse> getMonthlyNewMemberCount();
 }
