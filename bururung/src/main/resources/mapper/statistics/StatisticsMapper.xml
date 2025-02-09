@@ -7,4 +7,10 @@
     	GROUP BY gender
     	ORDER BY gender DESC
     </select>
+    <select id="getAgeGroupRatio" resultType="com.hifive.bururung.domain.statistics.dto.AgeGroupRatioResponse">
+    	SELECT age_group AS "ageGroup", COUNT(*) AS "count" 
+    	FROM v_member_age_group 
+    	GROUP BY age_group
+    	ORDER BY age_group
+    </select>
 </mapper>

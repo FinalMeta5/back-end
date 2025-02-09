@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hifive.bururung.domain.statistics.dto.AgeGroupRatioResponse;
 import com.hifive.bururung.domain.statistics.dto.GenderRatioResponse;
 import com.hifive.bururung.domain.statistics.repository.IStatisticsMapper;
 
@@ -32,4 +33,8 @@ public class StatisticsService implements IStatisticsService {
 		return genderRatioList;
 	}
 
+	@Override
+	public List<AgeGroupRatioResponse> getAgeGroupRatio() {
+		return iStatisticsMapper.getAgeGroupRatio();
+	}
 }

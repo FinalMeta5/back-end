@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hifive.bururung.domain.statistics.dto.AgeGroupRatioResponse;
 import com.hifive.bururung.domain.statistics.dto.GenderRatioResponse;
 import com.hifive.bururung.domain.statistics.service.IStatisticsService;
 
@@ -20,5 +21,9 @@ public class StatisticsController {
 	@GetMapping("/gender-ratio")
 	public List<GenderRatioResponse> getGenderRatio() {
 		return iStatisticsService.getGenderRatio();
+	}
+	@GetMapping("/age-ratio")
+	public List<AgeGroupRatioResponse> getAgeGroupRatio() {
+		return iStatisticsService.getAgeGroupRatio();
 	}
 }
