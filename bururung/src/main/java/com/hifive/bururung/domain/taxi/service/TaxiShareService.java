@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest;
+import com.hifive.bururung.domain.taxi.dto.TaxiShareResponse;
 import com.hifive.bururung.domain.taxi.entity.TaxiShare;
 import com.hifive.bururung.domain.taxi.repository.ITaxiShareRepository;
 
@@ -29,15 +31,20 @@ public class TaxiShareService implements ITaxiShareService{
 	}
 
 	@Override
-	public List<TaxiShare> getTaxiShareByPickupTime(String pickupTime) {
-		List<TaxiShare> list = taxiShareRepository.getTaxiShareByPickupTime(pickupTime);
+	public List<TaxiShareResponse> getTaxiShareByPickupTime(String pickupTime) {
+		List<TaxiShareResponse> list = taxiShareRepository.getTaxiShareByPickupTime(pickupTime);
 		return list;
 	}
 
 	@Override
-	public TaxiShare getTaxiShareById(Long taxiShareId) {
-		TaxiShare taxiShare = taxiShareRepository.getTaxiShareById(taxiShareId);
-		return taxiShare;
+	public TaxiShareResponse getTaxiShareById(Long taxiShareId) {
+		TaxiShareResponse taxiShareResponse = taxiShareRepository.getTaxiShareById(taxiShareId);
+		return taxiShareResponse;
+	}
+
+	@Override
+	public int getCountTaxsiShareByIdAndMemberId(TaxiShareJoinRequest taxiShareJoinRequest) {
+		return taxiShareRepository.getCountTaxsiShareByIdAndMemberId(taxiShareJoinRequest);
 	}
 	
 //	public TaxiShare getTaxiShareById(Long id) {
