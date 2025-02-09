@@ -127,6 +127,16 @@ public class CarRegistrationController {
 	    return ResponseEntity.ok(car.get());
 	}
 	
+	@GetMapping("/verified/{memberId}")
+	public ResponseEntity<Boolean> isCarVerified(@PathVariable("memberId") Long memberId) {
+		if (!carRegistrationService.isCarAlreadyRegistered(memberId)) {
+			
+			throw new CustomException(CarRegistrationErrorCode.CAR_NOT_FOUND);
+		}
+		boolean isVerified = carRegistrationService.isVerified(memberId);
+		return ResponseEntity.ok(isVerified);
+	}
+	
 	
 	// 해당 회원아이디로 차량 등록 조회
 	@GetMapping("/member/{memberId}")
