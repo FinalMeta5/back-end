@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hifive.bururung.domain.statistics.dto.AgeGroupRatioResponse;
 import com.hifive.bururung.domain.statistics.dto.GenderRatioResponse;
+import com.hifive.bururung.domain.statistics.dto.MemberNameWithRateResponse;
 import com.hifive.bururung.domain.statistics.dto.MonthlyNewMemberResponse;
 import com.hifive.bururung.domain.statistics.service.IStatisticsService;
 
@@ -32,5 +33,10 @@ public class StatisticsController {
 	@GetMapping("/monthly-member")
 	public List<MonthlyNewMemberResponse> getMonthlyNewMemberCount() {
 		return iStatisticsService.getMonthlyNewMemberCount();
+	}
+	
+	@GetMapping("/member-rate")
+	public List<MemberNameWithRateResponse> getMembersByRatingDesc() {
+		return iStatisticsService.getMembersByRatingDesc();
 	}
 }

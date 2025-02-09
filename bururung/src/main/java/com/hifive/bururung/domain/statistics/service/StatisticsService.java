@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hifive.bururung.domain.statistics.dto.AgeGroupRatioResponse;
 import com.hifive.bururung.domain.statistics.dto.GenderRatioResponse;
+import com.hifive.bururung.domain.statistics.dto.MemberNameWithRateResponse;
 import com.hifive.bururung.domain.statistics.dto.MonthlyNewMemberResponse;
 import com.hifive.bururung.domain.statistics.repository.IStatisticsMapper;
 
@@ -42,5 +43,10 @@ public class StatisticsService implements IStatisticsService {
 	@Override
 	public List<MonthlyNewMemberResponse> getMonthlyNewMemberCount() {
 		return iStatisticsMapper.getMonthlyNewMemberCount();
+	}
+	
+	@Override
+	public List<MemberNameWithRateResponse> getMembersByRatingDesc() {
+		return iStatisticsMapper.getMembersByRatingDesc();
 	}
 }

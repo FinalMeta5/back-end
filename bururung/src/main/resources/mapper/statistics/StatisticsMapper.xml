@@ -21,4 +21,10 @@
 		GROUP BY TO_CHAR(join_date, 'YYYY-MM')
 		ORDER BY TO_CHAR(join_date, 'YYYY-MM')
     </select>
+    
+    <select id="getMembersByRatingDesc" resultType="com.hifive.bururung.domain.statistics.dto.MemberNameWithRateResponse">
+		SELECT name AS "name", avg_rate AS "avgRate"
+		FROM v_member_avg_rate
+		ORDER BY avg_rate DESC
+    </select>
 </mapper>
