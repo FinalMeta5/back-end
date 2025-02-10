@@ -38,7 +38,8 @@ public class TaxiShareJoinController {
 		if(duplCnt<1) {
 			if(isHost<1) {
 				taxiShareJoinService.insertTaxiShareJoin(taxiShareJoinRequest);
-				//알림 보내기
+				//알림 보내기 
+				//참여자(오픈카톡방 주소), 호스트(참여자 정보) 모두 보내기
 				return ResponseEntity.status(HttpStatus.CREATED).build();				
 			}else {
 				System.out.println("본인이 호스트인 방엔 참여할 수 없음!!");

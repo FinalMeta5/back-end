@@ -14,7 +14,8 @@ public enum TaxiShareErrorCode implements ErrorCode{
     INVALID_PICKUP_TIME(HttpStatus.BAD_REQUEST, "유효하지 않은 픽업 시간입니다"),
     INVALID_LOCATION(HttpStatus.BAD_REQUEST, "유효하지 않은 위치 정보입니다"),
     DUPLICATE_TAXI_SHARE(HttpStatus.CONFLICT, "이미 존재하는 택시 공유 정보입니다"),
-    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "택시 공유 정보에 대한 접근 권한이 없습니다");
+    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "택시 공유 정보에 대한 접근 권한이 없습니다"),
+	TAXI_SHARE_DELETE_FAILED(HttpStatus.FORBIDDEN, "택시 공유 정보를 삭제할 수 없습니다.");
 
     private final HttpStatus status;
     private final String message;

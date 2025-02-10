@@ -17,4 +17,5 @@ public interface ITaxiShareRepository {
 	List<TaxiShareResponse> getTaxiShareByPickupTime(String pickupTime);
 	TaxiShareResponse getTaxiShareById(Long taxiShareId);
 	int getCountTaxsiShareByIdAndMemberId(TaxiShareJoinRequest taxiShareJoinRequest);
+	void deleteTaxiShare(TaxiShareJoinRequest taxiShareJoinRequest);
 }
