@@ -3,11 +3,13 @@ package com.hifive.bururung.domain.taxi.repository;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest;
+
 @Repository
 @Mapper
 public interface ITaxiShareJoinRepository {
 	int getJoinCountByTaxiShareId(Long taxiShareId);
-	void insertTaxiShareJoin(Long taxiShareId, Long memberId);
+	void insertTaxiShareJoin(TaxiShareJoinRequest taxiShareJoinRequest);
 	void deleteTaxiShareJoinById(Long tsjId);
-	int getDuplCntByTaxiShareIdAndMemberId(Long taxiShareId, Long memberId);
+	int getDuplCntByTaxiShareIdAndMemberId(TaxiShareJoinRequest taxiShareJoinRequest);
 }

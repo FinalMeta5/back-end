@@ -48,6 +48,20 @@ server:
       enabled: true
       force: true
 
+cloud:
+  aws:
+    credentials:
+      access-key: access-key
+      secret-key: secret-key
+
+    region:
+      static: region-name
+    stack:
+      auto: false
+
+    s3:
+      bucket: bucket-name
+
 #logging:
 #  level:
 #    org.springframework.security: DEBUG

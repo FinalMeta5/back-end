@@ -22,4 +22,8 @@ public interface ICarRegistrationService {
 	void deleteCar(Long carId); // 차량 삭제
 
 	boolean isCarAlreadyRegistered(Long memberId);
+	
+	boolean isVerified(Long memberId);
+
+	boolean isCarNumberExists(String carNumber);
 }
