@@ -3,6 +3,7 @@ package com.hifive.bururung.domain.taxi.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest;
 import com.hifive.bururung.domain.taxi.repository.ITaxiShareJoinRepository;
 import com.hifive.bururung.global.exception.CustomException;
 import com.hifive.bururung.global.exception.errorcode.TaxiShareJoinErrorCode;
@@ -23,9 +24,9 @@ public class TaxiShareJoinService implements ITaxiShareJoinService {
 	}
 
 	@Override
-	public void insertTaxiShareJoin(Long taxiShareId, Long memberId) {
+	public void insertTaxiShareJoin(TaxiShareJoinRequest taxiShareJoinRequest) {
 		try {
-			taxiShareJoinRepository.insertTaxiShareJoin(taxiShareId, memberId);
+			taxiShareJoinRepository.insertTaxiShareJoin(taxiShareJoinRequest);
 		}catch(Exception e) {
 			System.out.println("insertTaxiShareJoin 예외--> "+e.getMessage());
 		}
@@ -38,8 +39,8 @@ public class TaxiShareJoinService implements ITaxiShareJoinService {
 	}
 
 	@Override
-	public int getDuplCntByTaxiShareIdAndMemberId(Long taxiShareId, Long memberId) {
-		return taxiShareJoinRepository.getDuplCntByTaxiShareIdAndMemberId(taxiShareId, memberId);
+	public int getDuplCntByTaxiShareIdAndMemberId(TaxiShareJoinRequest taxiShareJoinRequest) {
+		return taxiShareJoinRepository.getDuplCntByTaxiShareIdAndMemberId(taxiShareJoinRequest);
 	}
 
 }

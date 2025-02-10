@@ -25,6 +25,12 @@ public class CarRegistrationService implements ICarRegistrationService {
 	}
 	
 	@Override
+	public boolean isVerified(Long memberId) {
+	    String verified = carRegistrationRepository.findVerifiedByMemberId(memberId);
+	    return "Y".equals(verified); // 'Y'면 true, 그 외는 false 반환
+	}
+	
+	@Override
 	public CarRegistration registerCar(CarRegistration car) {
 		return carRegistrationRepository.save(car);
 	}
@@ -63,6 +69,16 @@ public class CarRegistrationService implements ICarRegistrationService {
 			throw new RuntimeException("해당 차량이 존재하지 않습니다.");
 		}
 	}
+
+
+	@Override
+	@Transactional
+	public boolean isCarNumberExists(String carNumber) {
+	    Long count = carRegistrationRepository.countByCarNumber(carNumber);
+	    return count != null && count > 0;
+	}
+
+
 
 
 

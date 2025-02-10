@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hifive.bururung.domain.taxi.dto.LatLng;
+import com.hifive.bururung.domain.taxi.dto.TaxiShareResponse;
 import com.hifive.bururung.domain.taxi.entity.TaxiShare;
+import com.hifive.bururung.domain.taxi.service.ITaxiShareJoinService;
 import com.hifive.bururung.domain.taxi.service.ITaxiShareService;
 import com.hifive.bururung.global.common.NearbyLocationFinder;
 
@@ -25,6 +27,8 @@ import com.hifive.bururung.global.common.NearbyLocationFinder;
 public class TaxiShareController {
 	@Autowired
 	ITaxiShareService taxiShareService;
+	@Autowired
+	ITaxiShareJoinService taxiShareJoinService;
 	
 //	@GetMapping("/list")
 //	public ResponseEntity<List<TaxiShare>> findAll(){
@@ -40,36 +44,35 @@ public class TaxiShareController {
 	}
 	
 	@PostMapping("/list")
-	public ResponseEntity<List<TaxiShare>> getTaxiShareByPickupTimeAndLatLng(
+	public ResponseEntity<List<TaxiShareResponse>> getTaxiShareByPickupTimeAndLatLng(
 			@RequestParam("pickupTime")String pickupTime, @RequestBody(required=false) LatLng target){
 		
 		if (target == null) {
 			//날짜로만 검색
-	        List<TaxiShare> list = taxiShareService.getTaxiShareByPickupTime(pickupTime);
+	        List<TaxiShareResponse> list = taxiShareService.getTaxiShareByPickupTime(pickupTime);
 	        return ResponseEntity.ok(list);
 	    }else {
-	    	//날짜와 지역 모두 검색
-	    	List<TaxiShare> list = taxiShareService.getTaxiShareByPickupTime(pickupTime);
+	    	List<TaxiShareResponse> list = taxiShareService.getTaxiShareByPickupTime(pickupTime);
 	    	//날짜로 검색한 리스트들 중에 위도경도 정보만 빼서 따로 리스트로 저장
 	    	List<LatLng> allLocations = new ArrayList<>();
-	        for (TaxiShare taxiShare : list) {
-	            allLocations.add(new LatLng(taxiShare.getLatitudePL(), taxiShare.getLongitudePL()));
+	        for (TaxiShareResponse taxiShareResponse : list) {
+	            allLocations.add(new LatLng(taxiShareResponse.getLatitudePL(), taxiShareResponse.getLongitudePL()));
 	        }
 	        //타겟 지점이랑 계산해서 해당하는 위치 리스트
 	    	List<LatLng> nearbyLocations = NearbyLocationFinder.findNearbyLocations(target, allLocations);
 	    	//그 위치에 해당하는 객체리스트
-	    	List<TaxiShare> nearbyTaxiShares = new ArrayList<>();
+	    	List<TaxiShareResponse> nearbyTaxiShares = new ArrayList<>();
 	    	
-	    	for(TaxiShare taxiShare: list) {
+	    	for(TaxiShareResponse taxiShareResponse: list) {
 	    		boolean isNearby = false;
 	    		for(LatLng latlng : nearbyLocations) {
-	    			if(latlng.getLat()==taxiShare.getLatitudePL() && latlng.getLng()==taxiShare.getLongitudePL()) {
+	    			if(latlng.getLat()==taxiShareResponse.getLatitudePL() && latlng.getLng()==taxiShareResponse.getLongitudePL()) {
 	    				isNearby = true;
 	    				break;
 	    			}
 	    		}
 	    		if(isNearby) {
-	    			nearbyTaxiShares.add(taxiShare);
+	    			nearbyTaxiShares.add(taxiShareResponse);
 	    		}
 	    	}
 	    	
@@ -78,8 +81,8 @@ public class TaxiShareController {
 	}
 	
 	@GetMapping("/detail/{taxiShareId}")
-	public ResponseEntity<TaxiShare> getTaxiShareById(@PathVariable("taxiShareId") Long taxiShareId){
-		TaxiShare taxiShare = taxiShareService.getTaxiShareById(taxiShareId);
-		return ResponseEntity.ok(taxiShare);
+	public ResponseEntity<TaxiShareResponse> getTaxiShareById(@PathVariable("taxiShareId") Long taxiShareId){
+		TaxiShareResponse taxiShareResponse = taxiShareService.getTaxiShareById(taxiShareId);
+		return ResponseEntity.ok(taxiShareResponse);
 	}
 }

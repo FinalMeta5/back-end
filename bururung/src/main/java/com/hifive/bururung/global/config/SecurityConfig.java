@@ -32,15 +32,16 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-//                                .requestMatchers("/api/member/login").permitAll()
-//                                .requestMatchers("/api/member/signup").permitAll()
-//                                .requestMatchers("/api/email/**").permitAll()
-//                                .requestMatchers("/api/member/find-email").permitAll()
-//                                .requestMatchers("/api/member/change-password").permitAll()
-//                                .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
-//                                .requestMatchers("/error").permitAll()
-//                                .anyRequest().authenticated()
-                		.requestMatchers("/**").permitAll()
+                                .requestMatchers("/api/member/login").permitAll()
+                                .requestMatchers("/api/member/signup").permitAll()
+                                .requestMatchers("/api/email/**").permitAll()
+                                .requestMatchers("/api/member/find-email").permitAll()
+                                .requestMatchers("/api/member/change-password").permitAll()
+                                .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
+                                .requestMatchers("/error").permitAll()
+                                .requestMatchers("/api/carshare/registration/available-list").permitAll()
+                                .anyRequest().authenticated()
+//                		.requestMatchers("/**").permitAll()
                 )
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -65,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://bururung-2911d.web.app", "https://hifive55.shop", "http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("https://bururung-2911d.web.app", "https://hifive55.shop", "https://www.hifive5.shop", "http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.addExposedHeader("accesstoken");
