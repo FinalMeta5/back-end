@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hifive.bururung.domain.statistics.repository.IStatisticsMapper">
+    <select id="getGenderCount" resultType="com.hifive.bururung.domain.statistics.dto.GenderRatioResponse">
+    	SELECT gender AS "gender", COUNT(*) AS "count"
+    	FROM member
+    	GROUP BY gender
+    	ORDER BY gender DESC
+    </select>
+    
+    <select id="getAgeGroupRatio" resultType="com.hifive.bururung.domain.statistics.dto.AgeGroupRatioResponse">
+    	SELECT age_group AS "ageGroup", COUNT(*) AS "count" 
+    	FROM v_member_age_group 
+    	GROUP BY age_group
+    	ORDER BY age_group
+    </select>
+    
+    <select id="getMonthlyNewMemberCount" resultType="com.hifive.bururung.domain.statistics.dto.MonthlyNewMemberResponse">
+		SELECT TO_CHAR(join_date, 'YYYY-MM') AS "month", COUNT(*) AS "count"
+		FROM member
+		GROUP BY TO_CHAR(join_date, 'YYYY-MM')
+		ORDER BY TO_CHAR(join_date, 'YYYY-MM')
+    </select>
+    
+    <select id="getMembersByRatingDesc" resultType="com.hifive.bururung.domain.statistics.dto.MemberNameWithRateResponse">
+		SELECT name AS "name", avg_rate AS "avgRate"
+		FROM v_member_avg_rate
+		ORDER BY avg_rate DESC
+    </select>
+</mapper>
