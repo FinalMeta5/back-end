@@ -35,15 +35,21 @@
 	</select>
 	
 	<!-- 4. 차량 운행 정보 -->
-	<select id="findDrivingInformation" parameterType="Map" resultType="com.hifive.bururung.domain.carshare.participant.dto.DrivingInformation">
+	<select id="findDrivingInformation" parameterType="Map" resultType="com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse">
 		SELECT csr.latitude_pl, csr.longitude_pl, csr.latitude_ds, csr.longitude_ds, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') as pickup_date, csr.passengers_num, 
         	   csr.passengers_num - (SELECT COUNT(*)
                               		 FROM car_share_join
-                                     WHERE car_share_regi_id = 7) AS leftover_num
+                                     WHERE car_share_regi_id = #{carShareRegiId}) AS leftover_num
         FROM car_share_registration csr
         	LEFT JOIN car_share_join csj
         		ON csr.car_share_regi_id = csj.car_share_regi_id
 		WHERE csr.member_id = #{memberId}
-    		AND csr.car_share_regi_id = #{carShareRegiId};
+    		AND csr.car_share_regi_id = #{carShareRegiId}
 	</select>
+	
+	<!-- 5. 차량 공유 예약 -->
+	<insert id="insertRegistration" parameterType="com.hifive.bururung.domain.carshare.participant.dto.CarShareRegistrationRequest">
+		INSERT INTO car_share_join(car_share_regi_id, member_id, state, join_date) 
+		VALUES(#{carShareRegiId}, #{memberId}, '탄다', SYSDATE)
+	</insert>
 </mapper>
