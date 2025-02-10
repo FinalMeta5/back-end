@@ -87,6 +87,7 @@
 		from
 		TAXI_SHARE ts
 		where trunc(PICKUP_TIME) = #{param1}
+		order by status desc
 	</select>
 
 	<select id="getTaxiShareById"
@@ -128,6 +129,7 @@
 		TAXI_SHARE ts
 		WHERE
 		TAXI_SHARE_ID = #{param1}
+		order by status desc
 	</select>
 
 	<!-- 택시 공유 신청하려고 할때 그 멤버가 개설한 방인지 확인 -->
@@ -136,4 +138,9 @@
 		from taxi_share
 		where taxi_share_id=#{taxiShareId} and member_id = #{memberId}
 	</select>
+	
+	<delete id="deleteTaxiShare" parameterType="com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest">
+		delete from taxi_share
+		where taxi_share_id=#{taxiShareId} and memberId=#{memberId}
+	</delete>
 </mapper>

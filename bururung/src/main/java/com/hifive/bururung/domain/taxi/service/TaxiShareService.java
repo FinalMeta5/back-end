@@ -10,6 +10,8 @@ import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest;
 import com.hifive.bururung.domain.taxi.dto.TaxiShareResponse;
 import com.hifive.bururung.domain.taxi.entity.TaxiShare;
 import com.hifive.bururung.domain.taxi.repository.ITaxiShareRepository;
+import com.hifive.bururung.global.exception.CustomException;
+import com.hifive.bururung.global.exception.errorcode.TaxiShareErrorCode;
 
 @Service
 public class TaxiShareService implements ITaxiShareService{
@@ -45,6 +47,17 @@ public class TaxiShareService implements ITaxiShareService{
 	@Override
 	public int getCountTaxsiShareByIdAndMemberId(TaxiShareJoinRequest taxiShareJoinRequest) {
 		return taxiShareRepository.getCountTaxsiShareByIdAndMemberId(taxiShareJoinRequest);
+	}
+
+	@Override
+	public void deleteTaxiShare(TaxiShareJoinRequest taxiShareJoinRequest) {
+		try {			
+			taxiShareRepository.deleteTaxiShare(taxiShareJoinRequest);
+		}catch(Exception e) {
+			System.out.println("deleteTaxiShare 예외 발생 --> "+e.getMessage());
+			throw new CustomException(TaxiShareErrorCode.TAXI_SHARE_DELETE_FAILED);
+		}
+		
 	}
 	
 //	public TaxiShare getTaxiShareById(Long id) {

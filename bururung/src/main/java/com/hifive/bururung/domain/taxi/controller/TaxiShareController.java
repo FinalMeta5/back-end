@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hifive.bururung.domain.taxi.dto.LatLng;
+import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest;
 import com.hifive.bururung.domain.taxi.dto.TaxiShareResponse;
 import com.hifive.bururung.domain.taxi.entity.TaxiShare;
 import com.hifive.bururung.domain.taxi.service.ITaxiShareJoinService;
@@ -84,5 +85,15 @@ public class TaxiShareController {
 	public ResponseEntity<TaxiShareResponse> getTaxiShareById(@PathVariable("taxiShareId") Long taxiShareId){
 		TaxiShareResponse taxiShareResponse = taxiShareService.getTaxiShareById(taxiShareId);
 		return ResponseEntity.ok(taxiShareResponse);
+	}
+	
+	@PostMapping("/delete")
+	public ResponseEntity<Void> deleteTaxiShare(@RequestBody TaxiShareJoinRequest taxiShareJoinRequest) {
+		//참여자들에게 알림 보내기- 카테고리, 서비스유형, 보내는사람, 받는 사람, 내용
+		System.out.println(taxiShareJoinRequest.getTaxiShareId());
+		List<Long> memberList = taxiShareJoinService.getMemberIdByTaxiShareId(taxiShareJoinRequest.getTaxiShareId());
+		System.out.println(memberList.toString());
+//		taxiShareService.deleteTaxiShare(taxiShareJoinRequest);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

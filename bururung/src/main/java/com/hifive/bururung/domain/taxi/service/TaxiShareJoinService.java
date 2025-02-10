@@ -1,5 +1,7 @@
 package com.hifive.bururung.domain.taxi.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,13 +36,17 @@ public class TaxiShareJoinService implements ITaxiShareJoinService {
 
 	@Override
 	public void deleteTaxiShareJoinById(Long tsjId) {
-		// TODO Auto-generated method stub
-
+		//안쓸거같음..
 	}
 
 	@Override
 	public int getDuplCntByTaxiShareIdAndMemberId(TaxiShareJoinRequest taxiShareJoinRequest) {
 		return taxiShareJoinRepository.getDuplCntByTaxiShareIdAndMemberId(taxiShareJoinRequest);
+	}
+
+	@Override
+	public List<Long> getMemberIdByTaxiShareId(Long taxiShareId) {
+		return taxiShareJoinRepository.getMemberIdByTaxiShareId(taxiShareId);
 	}
 
 }
