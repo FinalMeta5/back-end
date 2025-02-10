@@ -1,5 +1,6 @@
 package com.hifive.bururung.domain.carshare.participant.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.CarShareRegistrationRequest;
 import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.repository.ServiceRegistrationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -37,5 +40,20 @@ public class ServiceRegistrationService implements IServiceRegistrationService{
 	@Override
 	public CarInformationResponse getCarInformation(Long memberId) {
 		return serviceRegistrationRepository.findCarInformation(memberId);
+	}
+
+	// 4. 차량 운행 정보
+	@Override
+	public DrivingInformationResponse getDrivingInformation(Long memberId, Long carShareRegiId) {
+		Map<String, Object> params = new HashMap<>();
+        params.put("memberId", memberId);
+        params.put("carShareRegiId", carShareRegiId);
+        return serviceRegistrationRepository.findDrivingInformation(params);
+	}
+
+	// 5. 공유 차량 예약
+	@Override
+	public void insertRegistration(CarShareRegistrationRequest request) {
+		serviceRegistrationRepository.insertRegistration(request);
 	}
 }
