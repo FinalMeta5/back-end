@@ -102,7 +102,7 @@ public class ServiceRegistrationController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+  
     // 4. 치량 운행 정보
     @GetMapping("/driving-information")
     public ResponseEntity<Object> getDrivingInformation(@RequestParam("memberId") Long memberId, @RequestParam("carShareRegiId") Long carShareRegiId) {
