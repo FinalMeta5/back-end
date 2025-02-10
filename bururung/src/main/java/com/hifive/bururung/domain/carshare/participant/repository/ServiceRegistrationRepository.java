@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.CarShareRegistrationRequest;
 import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse;
 
 @Mapper
 @Repository
@@ -21,5 +23,10 @@ public interface ServiceRegistrationRepository {
 	
 	// 3. 차량 정보
 	CarInformationResponse findCarInformation(Long memberId);
-
+	
+	// 4. 차량 운행 정보
+	DrivingInformationResponse findDrivingInformation(Map<String, Object> params);
+	
+	// 5. 차량 공유 예약
+	void insertRegistration(CarShareRegistrationRequest request);
 }
