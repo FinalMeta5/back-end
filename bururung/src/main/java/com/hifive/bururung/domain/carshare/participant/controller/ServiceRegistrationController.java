@@ -119,7 +119,7 @@ public class ServiceRegistrationController {
     		String message = "(정보) " + + carShareRegiId + "번 차량 공유에 대한 운행 정보가 없습니다." ;
         	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message); 
     	} catch (Exception e) {
-            logger.error("(에러) 차량 운행 정보를 조회하던 중 에러가 발생했습니다.");  
+            logger.error("(에러) 차량 운행 정보를 조회하던 중 에러가 발생했습니다. ");  
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
