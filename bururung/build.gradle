@@ -55,6 +55,9 @@ dependencies {
     	implementation('org.springframework.boot:spring-boot-starter-mail') {
     		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     	}
+    	implementation('org.springframework.boot:spring-boot-starter-websocket') {
+    		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    	}
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 	compileOnly 'org.projectlombok:lombok'
