@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum FileSubPath {
 	MEMBER("member/"),
-	CAR("car/");
+	CAR("car/"),
+	VERIFIED("verified/");
 	
 	private final String path;
 }
