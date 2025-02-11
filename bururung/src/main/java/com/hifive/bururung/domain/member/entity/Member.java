@@ -81,4 +81,8 @@ public class Member {
 		this.imageName = imageName;
 		this.imageUrl = imageUrl;
 	}
+	
+	public void changeCredit(int count) {
+		this.creditCount += count;
+	}
 }
