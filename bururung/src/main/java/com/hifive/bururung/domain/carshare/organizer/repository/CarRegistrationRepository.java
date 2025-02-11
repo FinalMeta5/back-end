@@ -19,6 +19,7 @@ public interface CarRegistrationRepository extends JpaRepository<CarRegistration
     String findVerifiedByMemberId(@Param("memberId") Long memberId);
 	@Query("SELECT COUNT(c) FROM CarRegistration c WHERE c.carNumber = :carNumber")
 	Long countByCarNumber(@Param("carNumber") String carNumber);
-
+	@Query("SELECT c.carId FROM CarRegistration c WHERE c.member.memberId = :memberId")
+	Long findCarIdByMemberId(@Param("memberId") Long memberId);
 
 }

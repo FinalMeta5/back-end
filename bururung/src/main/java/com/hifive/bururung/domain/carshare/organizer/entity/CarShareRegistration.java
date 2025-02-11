@@ -81,11 +81,11 @@ public class CarShareRegistration {
     @Column(name = "SIGUNGU_DS", length = 500)
     private String sigunguDs;
 
-    @Column(name = "ROADNAME_DSL", length = 500)
+    @Column(name = "ROADNAME_DS", length = 500)
     private String roadNameDs;
 
     @Column(name = "PICKUP_DATE", nullable = false)
-    private Date pickupDate;
+    private LocalDateTime pickupDate;
 
     @Column(name = "CATEGORY", length = 20)
     private String category;
