@@ -51,6 +51,8 @@ public class TaxiShareJoinController {
 		int isHost = taxiShareService.getCountTaxsiShareByIdAndMemberId(taxiShareJoinRequest);
 		// 해당 택시 정보
 		TaxiShareResponse taxiSahreResponse = taxiShareService.getTaxiShareById(taxiShareJoinRequest.getTaxiShareId());
+		// 호스트 멤버 정보
+		Member hostInfo = memberService.findByMemberId(taxiShareJoinRequest.getMemberId());
 		// 참여자 멤버 정보
 		Member participantInfo = memberService.findByMemberId(taxiShareJoinRequest.getMemberId());
 		if (duplCnt < 1) { // 참여한 적이 없으면
@@ -61,12 +63,12 @@ public class TaxiShareJoinController {
 				// 알림 보내기
 				// 참여자에게 보내기 => type=1
 				Notification notification2Participant = TaxiShareJoinAction.getTaxiShareJoinNotiInfo(taxiSahreResponse,
-						taxiShareJoinRequest, participantInfo, 1);
+						taxiShareJoinRequest, participantInfo,hostInfo, 1);
 				System.out.println(notification2Participant.toString());
 				notificationService.sendNotification(notification2Participant);
 				// 호스트에게 보내기=> type=2
 				Notification notification2Host = TaxiShareJoinAction.getTaxiShareJoinNotiInfo(taxiSahreResponse,
-						taxiShareJoinRequest, participantInfo, 2);
+						taxiShareJoinRequest, participantInfo,hostInfo, 2);
 				System.out.println(notification2Host.toString());
 				notificationService.sendNotification(notification2Host);
 				// 크레딧 차감
