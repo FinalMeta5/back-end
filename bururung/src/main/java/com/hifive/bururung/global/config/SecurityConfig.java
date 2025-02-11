@@ -40,8 +40,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/member/change-password").permitAll()
                                 .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
                                 .requestMatchers("/error").permitAll()
-                                .requestMatchers("/api/carshare/registration/available-list").permitAll()
-
+                                .requestMatchers("/api/car-share/**").hasRole("DRIVER")
                                 .anyRequest().authenticated()
 //                		.requestMatchers("/**").permitAll()
                 )
@@ -49,6 +48,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(Customizer.withDefaults())
                 .formLogin(formLogin -> formLogin.disable())
+                .cors(Customizer.withDefaults())
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(handler -> handler.authenticationEntryPoint(entryPoint));
         
@@ -68,7 +68,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+
         configuration.setAllowedOrigins(Arrays.asList("https://bururung-2911d.web.app", "https://hifive55.shop", "https://www.hifive5.shop", "http://localhost:3000", "https://localhost:3000"));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.addExposedHeader("accesstoken");

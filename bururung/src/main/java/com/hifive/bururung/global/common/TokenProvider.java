@@ -1,15 +1,12 @@
 package com.hifive.bururung.global.common;
 
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,20 +45,22 @@ public class TokenProvider implements InitializingBean{
 		this.key = Keys.hmacShaKeyFor(keyBytes); 
     }
 	
-	public String createAccessToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
+    public String createAccessToken(Authentication authentication) {
+        // 🔥 단일 ROLE 값 가져오기
+        String roleName = authentication.getAuthorities().stream()
+                .findFirst() // ✅ 가장 첫 번째 ROLE만 가져오기
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-        
+                .orElse("USER"); // 기본값 USER
+
         long now = (new Date()).getTime();
-        
+
         return Jwts.builder()
-        		.subject(authentication.getName())
-                .claim("role", authorities)
+                .subject(authentication.getName())
+                .claim("ROLE_NAME", roleName) // ✅ 단일 ROLE 저장
                 .signWith(key)
                 .expiration(new Date(now + accessTokenValidity * 1000))
                 .compact();
-	}
+    }
 	
 	public String createRefreshToken(Authentication authentication) {
         long now = (new Date()).getTime();
@@ -87,13 +86,13 @@ public class TokenProvider implements InitializingBean{
     public Authentication getAuthentication(String token) {
         Claims claims = getClaim(token);
 
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get("role").toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+        // 🔥 단일 ROLE 값 가져오기
+        String roleName = claims.get("ROLE_NAME", String.class); // ✅ 단일 값 그대로 사용
 
-        User user = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(user, token, authorities);
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + roleName); // ✅ ROLE_NAME 사용
+        User user = new User(claims.getSubject(), "", Collections.singletonList(authority));
+
+        return new UsernamePasswordAuthenticationToken(user, token, Collections.singletonList(authority));
     }
 	
     private Claims getClaim(String token) {
