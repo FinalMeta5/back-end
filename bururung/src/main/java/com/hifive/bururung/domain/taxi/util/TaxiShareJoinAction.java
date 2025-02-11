@@ -15,7 +15,7 @@ public class TaxiShareJoinAction {
 
 	// 참여 관련 알림 보내기
 	public static Notification getTaxiShareJoinNotiInfo(TaxiShareResponse taxiShareResponse,
-			TaxiShareJoinRequest taxiShareJoinRequest, Member participantInfo, int type) {
+			TaxiShareJoinRequest taxiShareJoinRequest, Member participantInfo, Member hostInfo, int type) {
 
 		LocalDateTime now = LocalDateTime.now();
 		Notification notification = new Notification();
@@ -26,7 +26,7 @@ public class TaxiShareJoinAction {
 		String content = "";
 		// 1 => 참여, to.참여자
 		if (type == 1) {
-			content = "호스트 " + taxiShareResponse.getMemberId() + "님의 택시 공유에 참여하셨습니다! 출발시간: "
+			content = "호스트 " +hostInfo.getNickname()+ "님의 택시 공유에 참여하셨습니다! 출발시간: "
 					+ taxiShareResponse.getPickupTime() + " " + taxiShareResponse.getPickupTimeOnly() + ", 출발지: "
 					+ taxiShareResponse.getPickupLocation() + ", 도착지: " + taxiShareResponse.getDestination()
 					+ "\n오픈카톡방에 접속하셔서 의사소통해보세요!" + "\n오픈카톡 url: " + taxiShareResponse.getOpenchatLink() + ", 오픈카톡코드: "
@@ -35,7 +35,7 @@ public class TaxiShareJoinAction {
 			notification.setCategory("신청완료");
 			notification.setRecipientId(taxiShareJoinRequest.getMemberId());
 		} else { // 2 => to.호스트에게 보냄
-			content = taxiShareResponse.getMemberId() + "님이 개설하신 택시 공유에 참가자가 생겼습니다! 참가자닉네임: "
+			content = hostInfo.getNickname() + "님이 개설하신 택시 공유에 참가자가 생겼습니다! 참가자닉네임: "
 					+ participantInfo.getNickname();
 			notification.setContent(content);
 			notification.setCategory("신청알림");
