@@ -72,3 +72,6 @@ jwt:
   secret: x
   access-token-validity: 1800 # 30 min
   refresh-token-validity: 1728000 # 20 days
+
+payment:
+  secret: test_sk_PBal2vxj81yL57XqoAXA85RQgOAN
