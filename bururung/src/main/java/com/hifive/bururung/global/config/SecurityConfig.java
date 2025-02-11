@@ -43,6 +43,10 @@ public class SecurityConfig {
                                 .requestMatchers("/api/car-share/**").hasRole("DRIVER")
                                 .requestMatchers("/api/carshare/registration/available-list").permitAll()
                                 .requestMatchers("/api/taxi/**").permitAll()
+                                .requestMatchers("/api/carshare/registration").permitAll()
+                                .requestMatchers("/api/car-share/register").hasRole("DRIVER")
+                                .requestMatchers("/api/car-shar/my-list").permitAll()
+
                                 .anyRequest().authenticated()
 //                      .requestMatchers("/**").permitAll()
                 )
