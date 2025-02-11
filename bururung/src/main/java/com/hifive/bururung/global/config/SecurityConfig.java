@@ -24,10 +24,10 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-	
-	private final TokenProvider tokenProvider;
-	private final AuthenticationEntryPoint entryPoint;
-	
+   
+   private final TokenProvider tokenProvider;
+   private final AuthenticationEntryPoint entryPoint;
+   
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -41,8 +41,10 @@ public class SecurityConfig {
                                 .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
                                 .requestMatchers("/error").permitAll()
                                 .requestMatchers("/api/car-share/**").hasRole("DRIVER")
+                                .requestMatchers("/api/carshare/registration/available-list").permitAll()
+                                .requestMatchers("/api/taxi/**").permitAll()
                                 .anyRequest().authenticated()
-//                		.requestMatchers("/**").permitAll()
+//                      .requestMatchers("/**").permitAll()
                 )
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -57,12 +59,12 @@ public class SecurityConfig {
     
     @Bean
     public PasswordEncoder passwordEncoder() {
-    	return new BCryptPasswordEncoder();
+       return new BCryptPasswordEncoder();
     }
     
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    	return new JwtAuthenticationFilter(tokenProvider);
+       return new JwtAuthenticationFilter(tokenProvider);
     }
     
     @Bean
