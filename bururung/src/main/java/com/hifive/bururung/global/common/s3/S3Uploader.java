@@ -50,7 +50,7 @@ public class S3Uploader {
         
         amazonS3Client.putObject(new PutObjectRequest(bucketName, filePath, uploadFile.getInputStream(), objectMetadata)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
-        
+        log.info("✅ S3 업로드 성공 - URL: {}", amazonS3Client.getUrl(bucketName, filePath).toString());
         return amazonS3Client.getUrl(bucketName, filePath).toString();
     }
     

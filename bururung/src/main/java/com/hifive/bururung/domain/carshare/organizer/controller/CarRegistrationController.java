@@ -1,5 +1,6 @@
 package com.hifive.bururung.domain.carshare.organizer.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +24,11 @@ import com.hifive.bururung.domain.carshare.organizer.entity.CarRegistration;
 import com.hifive.bururung.domain.carshare.organizer.service.ICarRegistrationService;
 import com.hifive.bururung.domain.member.entity.Member;
 import com.hifive.bururung.domain.member.service.MemberService;
+import com.hifive.bururung.global.common.s3.FileSubPath;
+import com.hifive.bururung.global.common.s3.S3Uploader;
+import com.hifive.bururung.global.common.s3.UploadFileDTO;
 import com.hifive.bururung.global.exception.CustomException;
 import com.hifive.bururung.global.exception.errorcode.CarRegistrationErrorCode;
-import com.hifive.bururung.global.util.FileStorageService;
 import com.hifive.bururung.global.util.SecurityUtil;
 
 @RestController
@@ -33,13 +36,13 @@ import com.hifive.bururung.global.util.SecurityUtil;
 public class CarRegistrationController {
 	private final ICarRegistrationService carRegistrationService;
 	private final MemberService  memberService;
-	private final FileStorageService fileStorageService;
+	private final S3Uploader s3Uploader;
 	
 	public CarRegistrationController(ICarRegistrationService carRegistrationService, 
-			MemberService memberService, FileStorageService fileStorageService) {
+			MemberService memberService, S3Uploader s3Uploader) {
 		this.carRegistrationService = carRegistrationService;
 		this.memberService = memberService;
-		this.fileStorageService = fileStorageService;
+		this.s3Uploader = s3Uploader;
 	}
 	
 	// 공백 제거 유틸 메서드
@@ -48,11 +51,42 @@ public class CarRegistrationController {
 	    return carNumber.trim().replaceAll("\\s+", ""); // 모든 공백 제거
 	}
 	
+	@PostMapping("/upload-car-image")
+	public ResponseEntity<String> uploadCarImage(@RequestParam("carImage") MultipartFile carImage) throws IOException {
+	    if (carImage == null) {
+	        System.out.println("🚨 [ERROR] MultipartFile carImage is NULL");
+	        return ResponseEntity.badRequest().body("🚨 업로드할 파일이 없습니다! (NULL)");
+	    }
+	    if (carImage.isEmpty()) {
+	        System.out.println("🚨 [ERROR] MultipartFile carImage is EMPTY");
+	        return ResponseEntity.badRequest().body("🚨 업로드할 파일이 없습니다! (EMPTY)");
+	    }
+
+	    System.out.println("📌 [UPLOAD START] 파일 이름: " + carImage.getOriginalFilename());
+	    System.out.println("📌 파일 크기: " + carImage.getSize() + " bytes");
+
+	    // ✅ S3 업로드
+	    UploadFileDTO uploadFileDTO = s3Uploader.uploadFile(carImage, FileSubPath.CAR.getPath());
+
+	    System.out.println("✅ [UPLOAD SUCCESS] S3 업로드 완료, URL: " + uploadFileDTO.getStoreFullUrl());
+	    return ResponseEntity.ok(uploadFileDTO.getStoreFullUrl());
+	}
+
+
+	@PostMapping("/upload-verified-file")
+	public ResponseEntity<String> uploadAgreementFile(@RequestParam("agreementFile") MultipartFile verifiedFile) throws IOException {
+	    // ✅ S3에 업로드
+	    UploadFileDTO uploadFileDTO = s3Uploader.uploadFile(verifiedFile, FileSubPath.VERIFIED.getPath());
+	    
+	    return ResponseEntity.ok(uploadFileDTO.getStoreFullUrl()); // 업로드된 URL 반환
+	}
+
+	
 	// create : 차량 등록
 	@PostMapping("/register")
 	public ResponseEntity<String> registerCar(
-	    @RequestParam("carImage") MultipartFile carImage,
-	    @RequestParam("agreementFile") MultipartFile agreementFile,
+		@RequestParam("carImageUrl") String carImageUrl,
+		@RequestParam("agreementFile") String agreementFileUrl,
 	    @RequestParam("carNumber") String carNumber,
 	    @RequestParam("carModel") String carModel,
 	    @RequestParam("maxPassengers") int maxPassengers,
@@ -80,10 +114,7 @@ public class CarRegistrationController {
 	    // ✅ Member 가져오기
 	    Member member = memberService.findByMemberId(sessionMemberId);
 
-	    // ✅ 파일 저장 (각 파일의 UUID 저장)
 	    String carImageName = carModel + sessionMemberId;
-	    String carImageUrl = fileStorageService.saveFile(carImage, "car-images/");
-	    String agreementFileName = fileStorageService.saveFile(agreementFile, "agreements/");
 
 	    // ✅ 차량 등록 객체 생성
 	    CarRegistration car = new CarRegistration();
@@ -95,7 +126,7 @@ public class CarRegistrationController {
 	    car.setCarDescription(carDescription);
 	    car.setImageName(carImageName);
 	    car.setImageUrl(carImageUrl);
-	    car.setVerifiedFile(agreementFileName); // 가장 최근 파일만 저장
+	    car.setVerifiedFile(agreementFileUrl); // 가장 최근 파일만 저장
 
 	    carRegistrationService.registerCar(car);
 
