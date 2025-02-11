@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest;
 import com.hifive.bururung.domain.taxi.dto.TaxiShareResponse;
@@ -17,5 +18,6 @@ public interface ITaxiShareRepository {
 	List<TaxiShareResponse> getTaxiShareByPickupTime(String pickupTime);
 	TaxiShareResponse getTaxiShareById(Long taxiShareId);
 	int getCountTaxsiShareByIdAndMemberId(TaxiShareJoinRequest taxiShareJoinRequest);
-	void deleteTaxiShare(TaxiShareJoinRequest taxiShareJoinRequest);
+	@Transactional
+	int deleteTaxiShare(TaxiShareJoinRequest taxiShareJoinRequest);
 }

@@ -15,12 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hifive.bururung.domain.member.entity.Member;
+import com.hifive.bururung.domain.member.service.IMemberService;
+import com.hifive.bururung.domain.notification.entity.Notification;
+import com.hifive.bururung.domain.notification.service.INotificationService;
 import com.hifive.bururung.domain.taxi.dto.LatLng;
 import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest;
 import com.hifive.bururung.domain.taxi.dto.TaxiShareResponse;
 import com.hifive.bururung.domain.taxi.entity.TaxiShare;
 import com.hifive.bururung.domain.taxi.service.ITaxiShareJoinService;
 import com.hifive.bururung.domain.taxi.service.ITaxiShareService;
+import com.hifive.bururung.domain.taxi.util.TaxiShareJoinAction;
 import com.hifive.bururung.global.common.NearbyLocationFinder;
 
 @RestController
@@ -30,12 +35,10 @@ public class TaxiShareController {
 	ITaxiShareService taxiShareService;
 	@Autowired
 	ITaxiShareJoinService taxiShareJoinService;
-	
-//	@GetMapping("/list")
-//	public ResponseEntity<List<TaxiShare>> findAll(){
-//		List<TaxiShare> taxiShareList = taxiShareService.findAll();
-//		return ResponseEntity.ok(taxiShareList);
-//	}
+	@Autowired
+	IMemberService memberService;
+	@Autowired
+	INotificationService notificationService;
 	
 	@PostMapping("/insert")
 	public ResponseEntity<Void> insertTaxiShare(@RequestBody TaxiShare taxiShare) {
@@ -87,13 +90,22 @@ public class TaxiShareController {
 		return ResponseEntity.ok(taxiShareResponse);
 	}
 	
+	//택시 공유 삭제
 	@PostMapping("/delete")
 	public ResponseEntity<Void> deleteTaxiShare(@RequestBody TaxiShareJoinRequest taxiShareJoinRequest) {
-		//참여자들에게 알림 보내기- 카테고리, 서비스유형, 보내는사람, 받는 사람, 내용
-		System.out.println(taxiShareJoinRequest.getTaxiShareId());
+		//삭제되는 해당 택시공유 정보
+		TaxiShareResponse taxiShareResponse = taxiShareService.getTaxiShareById(taxiShareJoinRequest.getTaxiShareId());
+		System.out.println("택시 공유 삭제하려는 사람 : "+taxiShareJoinRequest.getMemberId()+", 실제 삭제하는 게시글 쓴사람"+taxiShareResponse.getMemberId());
+		//알람 보낼 멤버리스트(삭제하는 택시공유에 신청한 멤버들)
 		List<Long> memberList = taxiShareJoinService.getMemberIdByTaxiShareId(taxiShareJoinRequest.getTaxiShareId());
-		System.out.println(memberList.toString());
-//		taxiShareService.deleteTaxiShare(taxiShareJoinRequest);
+		System.out.println("전송해야되는 멤버리스트: "+memberList.toString());
+		for(Long memberId : memberList) {
+			Member participantInfo = memberService.findByMemberId(memberId);
+			Notification notification = TaxiShareJoinAction.getTaxiShareDeleteNotiInfo(taxiShareResponse, taxiShareJoinRequest, participantInfo);
+			notificationService.sendNotification(notification);
+		}
+		//택시 삭제하기
+		taxiShareService.deleteTaxiShare(taxiShareJoinRequest);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

@@ -11,4 +11,5 @@ public interface ITaxiShareJoinService {
 	void deleteTaxiShareJoinById(Long tsjId);
 	int getDuplCntByTaxiShareIdAndMemberId(TaxiShareJoinRequest taxiShareJoinRequest);
 	List<Long> getMemberIdByTaxiShareId(Long taxiShareId);
+	void deleteTaxiShareJoinByTaxiShareId(Long taxiShareId);
 }

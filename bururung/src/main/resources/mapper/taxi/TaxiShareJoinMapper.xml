@@ -23,6 +23,10 @@
 		DELETE FROM TAXI_SHARE_JOIN WHERE TSJ_ID = #{param1}
 	</delete>
 
+	<delete id="deleteTaxiShareJoinByTaxiShareId">
+		DELETE FROM TAXI_SHARE_JOIN WHERE TAXI_SHARE_ID = #{param1}
+	</delete>
+	
 	<select id="getDuplCntByTaxiShareIdAndMemberId" resultType="int"
 		parameterType="com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest">
 		select count(*)
