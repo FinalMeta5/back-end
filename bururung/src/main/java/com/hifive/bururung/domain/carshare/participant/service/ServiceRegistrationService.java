@@ -1,5 +1,6 @@
 package com.hifive.bururung.domain.carshare.participant.service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareList
 import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.PastParticipationListResponse;
 import com.hifive.bururung.domain.carshare.participant.repository.ServiceRegistrationRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -90,5 +92,18 @@ public class ServiceRegistrationService implements IServiceRegistrationService{
 	@Override
 	public List<AllCarListResponse> findAllShareCarList() {
 		return serviceRegistrationRepository.findAllShareCarList();
+	}
+	
+	// 10. 과거 차량 탑승 내역 조회
+	@Override
+	public PastParticipationListResponse findPastParticipationList(Long userId) {
+		return serviceRegistrationRepository.findPastParticipationList(userId);
+	}
+
+	// 11. 오늘 차량 탑승 내역 조회
+	@Override
+	public List<PastParticipationListResponse> findTodayParticipationList(Long userId) {
+		List<PastParticipationListResponse> result = serviceRegistrationRepository.findTodayParticipationList(userId);
+		return result != null ? result : Collections.emptyList();
 	}
 }

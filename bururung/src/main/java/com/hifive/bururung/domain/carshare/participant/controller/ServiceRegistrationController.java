@@ -21,6 +21,7 @@ import com.hifive.bururung.domain.carshare.participant.dto.AllCarListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.PastParticipationListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.service.IServiceRegistrationService;
 import com.hifive.bururung.domain.member.entity.Member;
@@ -222,5 +223,33 @@ public class ServiceRegistrationController {
             log.error("(실패) 공유 차량 전체 목록 조회에 실패하였습니다. : ", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
           } 
+    }
+    
+    // 10. 과거 차량 탑승 내역 조회
+    @GetMapping("/past-list")
+    public ResponseEntity<Object> findPastParticipationList(@RequestParam("userId") Long userId) {
+    	try {
+    		PastParticipationListResponse pastParticipationResponse = registrationService.findPastParticipationList(userId);
+    		
+    		if (pastParticipationResponse == null) {
+    			String message = "(정보) " + userId + "번 사용자의 과거 탑승 내역이 없습니다." ;
+            	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message); 
+            }
+    		
+            return ResponseEntity.ok(pastParticipationResponse);
+        } catch (RuntimeException e) {
+        	String message = "(정보) " + + userId + "번 사용자의 과거 탑승 내역이 없습니다." ;
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message); 
+    	} catch (Exception e) {
+            logger.error("과거 탑승 내역을 조회하던 중 에러가 발생했습니다.");  
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    // 11. 오늘 차량 탑승 내역 조회
+    @GetMapping("/today-list")
+    public ResponseEntity<List<PastParticipationListResponse>> findTodayParticipationList(@RequestParam("userId") Long userId) {
+    	List<PastParticipationListResponse> participationList = registrationService.findTodayParticipationList(userId);
+        return ResponseEntity.ok(participationList);
     }
 }

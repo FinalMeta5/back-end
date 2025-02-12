@@ -50,7 +50,7 @@
 	<!-- 5. 차량 공유 예약 -->
 	<insert id="insertRegistration" parameterType="Map">
 		INSERT INTO car_share_join (car_share_regi_id, member_id, state, join_date)
-		SELECT #{carShareRegiId}, #{userId}, '참여', LOCALTIMESTAMP
+		SELECT #{carShareRegiId}, #{userId}, '탄다', LOCALTIMESTAMP
 		FROM dual
 		WHERE (SELECT 
         		SUM(CASE 
@@ -80,5 +80,29 @@
                                 FROM CAR_SHARE_JOIN csj2
                                 WHERE csj2.CAR_SHARE_REGI_ID = csr.CAR_SHARE_REGI_ID
 		)
+	</select>
+	
+	<!-- 10. 과거 차량 탑승 내역 조회 -->
+	<select id="findPastParticipationList" parameterType="Long" resultType="com.hifive.bururung.domain.carshare.participant.dto.PastParticipationListResponse">
+		SELECT csr.car_share_regi_id, csr.member_id, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') as pickup_date, csr.pickup_loc, csr.destination
+		FROM car_share_registration csr
+			JOIN car_share_join csj
+    			ON csr.car_share_regi_id = csj.car_share_regi_id
+		WHERE csj.member_id = #{userId}
+    		AND csr.pickup_date <![CDATA[ < ]]> LOCALTIMESTAMP
+	</select>
+	
+	<!-- 11. 오늘 차량 탑승 내역 조회 -->
+	<select id="findTodayParticipationList" parameterType="Map" resultType="com.hifive.bururung.domain.carshare.participant.dto.TodayParticipationListResponse">
+		SELECT csr.car_share_regi_id, csj.car_share_join_id, csj.count, csr.member_id, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') as pickup_date, csr.pickup_loc, csr.destination, 
+        		(SELECT COUNT(*)
+                 FROM car_share_join
+                 WHERE car_share_regi_id = csr.car_share_regi_id) AS expectedNum
+		FROM car_share_registration csr
+		JOIN car_share_join csj
+    		ON csr.car_share_regi_id = csj.car_share_regi_id
+		WHERE csj.member_id = #{userId}
+    		AND csr.pickup_date >= TRUNC(LOCALTIMESTAMP)
+    		AND csr.pickup_date <![CDATA[ < ]]> TRUNC(LOCALTIMESTAMP) + INTERVAL '1' DAY
 	</select>
 </mapper>

@@ -11,6 +11,7 @@ import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareList
 import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.PastParticipationListResponse;
 
 @Mapper
 @Repository
@@ -41,4 +42,10 @@ public interface ServiceRegistrationRepository {
 	
 	// 9. 전체 공유 차량 목록 조회
 	List<AllCarListResponse> findAllShareCarList();
+	
+	// 10. 과거 차량 탑승 내역 조회
+	PastParticipationListResponse findPastParticipationList(Long userId);
+	
+	// 11. 오늘 차량 탑승 내역 조회
+	List<PastParticipationListResponse> findTodayParticipationList(Long userId);
 }

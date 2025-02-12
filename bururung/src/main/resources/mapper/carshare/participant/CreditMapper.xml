@@ -8,7 +8,7 @@
 		SELECT 
     		SUM(CASE 
             	WHEN state IN ('CHARGE', 'PAY') THEN count  
-            	WHEN state IN ('CAR', 'TEXT') THEN -count
+            	WHEN state IN ('CAR', 'TAXI') THEN -count
             	ELSE 0 
         	END) AS total_credit
 		FROM member_credit
