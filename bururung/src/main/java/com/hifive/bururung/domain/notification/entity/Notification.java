@@ -34,7 +34,4 @@ public class Notification {
     private String openStatus;
     private String checked;
     
-//    public Notification(String content) {
-//    	this.content = content;
-//    }
 }
