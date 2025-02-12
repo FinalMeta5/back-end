@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hifive.bururung.domain.carshare.participant.dto.AllCarListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
-import com.hifive.bururung.domain.carshare.participant.dto.CarShareRegistrationRequest;
 import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.repository.ServiceRegistrationRepository;
@@ -53,7 +53,42 @@ public class ServiceRegistrationService implements IServiceRegistrationService{
 
 	// 5. 공유 차량 예약
 	@Override
-	public void insertRegistration(CarShareRegistrationRequest request) {
-		serviceRegistrationRepository.insertRegistration(request);
+	public boolean insertRegistration(Long carShareRegiId, Long userId) {
+		long leftoverCredit = serviceRegistrationRepository.findLeftoverCredit(userId);
+		
+		if(leftoverCredit >= 7) {
+			Map<String, Object> params = new HashMap<>();
+            params.put("carShareRegiId", carShareRegiId);
+            params.put("userId", userId);
+            
+            serviceRegistrationRepository.insertRegistration(params);
+            return true;
+		} else {
+			return false;
+		}
+	}
+	
+	// 6. 리뷰 평점 조회
+	@Override
+	public Double findRating(Long memberId) {
+		return serviceRegistrationRepository.findRating(memberId);
+	}
+
+	// 7. 잔여 크레딧 조회
+	@Override
+	public int findLeftoverCredit(Long userId) {
+		return serviceRegistrationRepository.findLeftoverCredit(userId);
+	}
+
+	// 8. 크레딧 차감
+	@Override
+	public void insertCreditByCar(Long userId) {
+		serviceRegistrationRepository.insertCreditByCar(userId);
+	}
+
+	// 9. 전체 공유 차량 목록 조회
+	@Override
+	public List<AllCarListResponse> findAllShareCarList() {
+		return serviceRegistrationRepository.findAllShareCarList();
 	}
 }
