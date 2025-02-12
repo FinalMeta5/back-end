@@ -46,6 +46,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/carshare/registration").permitAll()
                                 .requestMatchers("/api/car-share/register").hasRole("DRIVER")
                                 .requestMatchers("/api/car-shar/my-list").permitAll()
+                                .requestMatchers("/api/scheduling/**").permitAll()
 
                                 .anyRequest().authenticated()
 //                      .requestMatchers("/**").permitAll()

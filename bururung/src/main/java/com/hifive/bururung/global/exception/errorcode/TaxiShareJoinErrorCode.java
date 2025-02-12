@@ -14,8 +14,11 @@ public enum TaxiShareJoinErrorCode implements ErrorCode {
     UNAUTHORIZED_JOIN(HttpStatus.UNAUTHORIZED, "택시 공유 참여에 대한 권한이 없습니다"),
     CANNOT_JOIN_OWN_SHARE(HttpStatus.BAD_REQUEST, "자신이 만든 택시 공유에는 참여할 수 없습니다"),
     DUPLICATE_JOIN_ATTEMPT(HttpStatus.CONFLICT, "이미 참여한 택시 공유에 다시 참여할 수 없습니다"),
-    JOIN_CANCELLATION_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "택시 공유 참여 취소가 불가능한 상태입니다");
+    JOIN_CANCELLATION_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "택시 공유 참여 취소가 불가능한 상태입니다"),
+	CREDIT_DEDUCTED_FAILED(HttpStatus.BAD_REQUEST, "크레딧이 부족합니다."),
 	
+	//차량공유 알림 스케쥴링
+	CAR_SHARE_SYSDATE_NOT_FOUND(HttpStatus.NOT_FOUND, "오늘의 택시 공유 참여자가 없습니다.");
 	private final HttpStatus status;
     private final String message;
 }

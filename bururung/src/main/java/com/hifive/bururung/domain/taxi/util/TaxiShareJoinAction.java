@@ -11,7 +11,7 @@ import com.hifive.bururung.domain.taxi.dto.TaxiShareResponse;
 
 public class TaxiShareJoinAction {
 	
-	private static final Long operatorId = 42L; // 고정값
+	private static final Long OPERATORID = 42L; // 고정값
 
 	// 참여 관련 알림 보내기
 	public static Notification getTaxiShareJoinNotiInfo(TaxiShareResponse taxiShareResponse,
@@ -20,7 +20,7 @@ public class TaxiShareJoinAction {
 		LocalDateTime now = LocalDateTime.now();
 		Notification notification = new Notification();
 		notification.setServiceCtg("택시 공유 서비스");
-		notification.setSenderId(operatorId);
+		notification.setSenderId(OPERATORID);
 		notification.setCreatedDate(now);
 
 		String content = "";
@@ -51,7 +51,7 @@ public class TaxiShareJoinAction {
 		LocalDateTime now = LocalDateTime.now();
 		Notification notification = new Notification();
 		notification.setServiceCtg("택시 공유 서비스");
-		notification.setSenderId(operatorId);
+		notification.setSenderId(OPERATORID);
 		notification.setCreatedDate(now);
 		String content = participantInfo.getNickname()+"고객님, 죄송합니다. 참여 신청하신 택시 공유가 호스트에 의해 삭제되었습니다. 다른 택시 공유를 신청해보세요!! \n"+
 					"삭제된 신청정보\n"+

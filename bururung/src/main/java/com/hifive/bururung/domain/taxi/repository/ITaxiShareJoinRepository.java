@@ -17,4 +17,8 @@ public interface ITaxiShareJoinRepository {
 	int getDuplCntByTaxiShareIdAndMemberId(TaxiShareJoinRequest taxiShareJoinRequest);
 	List<Long> getMemberIdByTaxiShareId(Long taxiShareId);
 	void deleteTaxiShareJoinByTaxiShareId(Long taxiShareId);
+	void insertCreditByTaxi(int count, Long memberId);
+	int findLeftoverCredit(Long memberId);
+	//차량공유 알림스케쥴링
+	List<HashMap<String, Object>> getCarShareCountByMemberIdAndSysdate();
 }
