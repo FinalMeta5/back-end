@@ -5,7 +5,7 @@
 	
 	<!-- 1. 현재 이용 가능한 공유 차량 목록 -->
 	<select id="findAvailableCarShareList" resultType="com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse">
-		SELECT DISTINCT csr.car_share_regi_id, m.nickname, csr.latitude_pl, csr.longitude_pl, csr.latitude_ds, csr.longitude_ds, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') AS pickup_date
+		SELECT DISTINCT m.member_id, csr.car_share_regi_id, m.nickname, csr.latitude_pl, csr.longitude_pl, csr.latitude_ds, csr.longitude_ds, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') AS pickup_date
 		FROM CAR_SHARE_REGISTRATION csr
     		LEFT JOIN CAR_SHARE_JOIN csj
         		ON csr.car_share_regi_id = csj.car_share_regi_id
@@ -29,14 +29,14 @@
 	
 	<!-- 3. 차량 정보 -->
 	<select id="findCarInformation" parameterType="Long" resultType="com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse">
-		SELECT car_model, car_number, color, car_description
+		SELECT car_model, car_number, color, car_description, image_url
 		FROM car_registration
 		WHERE member_id = #{memberId}
 	</select>
 	
 	<!-- 4. 차량 운행 정보 -->
 	<select id="findDrivingInformation" parameterType="Map" resultType="com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse">
-		SELECT csr.latitude_pl, csr.longitude_pl, csr.latitude_ds, csr.longitude_ds, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') as pickup_date, csr.passengers_num, 
+		SELECT DISTINCT csr.latitude_pl, csr.longitude_pl, csr.latitude_ds, csr.longitude_ds, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') as pickup_date, csr.passengers_num, 
         	   csr.passengers_num - (SELECT COUNT(*)
                               		 FROM car_share_join
                                      WHERE car_share_regi_id = #{carShareRegiId}) AS leftover_num
@@ -48,8 +48,37 @@
 	</select>
 	
 	<!-- 5. 차량 공유 예약 -->
-	<insert id="insertRegistration" parameterType="com.hifive.bururung.domain.carshare.participant.dto.CarShareRegistrationRequest">
-		INSERT INTO car_share_join(car_share_regi_id, member_id, state, join_date) 
-		VALUES(#{carShareRegiId}, #{memberId}, '탄다', SYSDATE)
+	<insert id="insertRegistration" parameterType="Map">
+		INSERT INTO car_share_join (car_share_regi_id, member_id, state, join_date)
+		SELECT #{carShareRegiId}, #{userId}, '참여', LOCALTIMESTAMP
+		FROM dual
+		WHERE (SELECT 
+        		SUM(CASE 
+           		WHEN state IN ('CHARGE', 'PAY') THEN count  
+            		WHEN state IN ('CAR', 'TEXT') THEN -count 
+            		ELSE 0 
+        		END) AS total_credit
+		FROM member_credit
+		WHERE member_id = #{userId}) >= 7
 	</insert>
+	
+	<!--  6. 리뷰 평점 조회  -->
+	<select id="findRating" parameterType="Long" resultType="Double"> 
+		SELECT ROUND(SUM(rate) / COUNT(*), 1) AS avg_rate 
+		FROM review WHERE driver_id = #{memberId} 
+		GROUP BY driver_id 
+	</select>
+	
+	
+	<!-- 9. 전체 공유 차량 목록 조회 -->
+	<select id="findAllShareCarList" resultType="com.hifive.bururung.domain.carshare.participant.dto.AllCarListResponse">
+		SELECT car_share_regi_id, car_id, member_id, latitude_pl, longitude_pl, passengers_num, latitude_ds, longitude_ds, pickup_date, category
+		FROM car_share_registration csr
+		WHERE pickup_date > LOCALTIMESTAMP
+    		AND csr.passengers_num > (
+                                SELECT COUNT(*)
+                                FROM CAR_SHARE_JOIN csj2
+                                WHERE csj2.CAR_SHARE_REGI_ID = csr.CAR_SHARE_REGI_ID
+		)
+	</select>
 </mapper>

@@ -17,11 +17,11 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.hifive.bururung.domain.carshare.organizer.entity.CarRegistration;
+import com.hifive.bururung.domain.carshare.participant.dto.AllCarListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
-import com.hifive.bururung.domain.carshare.participant.dto.CarShareRegistrationRequest;
 import com.hifive.bururung.domain.carshare.participant.service.IServiceRegistrationService;
 import com.hifive.bururung.domain.member.entity.Member;
 
@@ -126,13 +126,101 @@ public class ServiceRegistrationController {
     
     // 5. 차량 공유 예약
     @PostMapping("/reservation")
-    public ResponseEntity<String> registerCarShare(@RequestBody CarShareRegistrationRequest request) {
+    public String registerCarShare(@RequestParam("carShareRegiId") Long carShareRegiId, @RequestParam("userId") Long userId) {
     	try {
-    		registrationService.insertRegistration(request);
-    		return ResponseEntity.ok("(성공) 차량 공유 예약에 성공했습니다.");
+    		int leftCredit = registrationService.findLeftoverCredit(userId);
+    		boolean reservation = registrationService.insertRegistration(carShareRegiId, userId);
+    		
+    		if (leftCredit < 7) {
+    			String failMessage = "잔여 크레딧이 부족합니다.";
+    			return failMessage;
+    		}
+    		
+    		if (reservation) {
+    			String successMessage = "차량 공유 예약에 성공했습니다.";
+    			return successMessage;
+
+            } else {
+            	String failMessage = "차량 공유 예약에 실패했습니다.";
+    			return failMessage;
+            }
     	} catch (Exception e) {
-            logger.error("(에러) 공유 차량 예약에 실패했습니다.");  
+    		logger.error("(에러3) 차량 공유 예약에 실패했습니다. : " + e.getMessage());
+    		String failMessage = "차량 공유 예약에 실패했습니다.";
+			return failMessage;
+        }
+    }
+    
+    // 6. 리뷰 평점 조회
+    @GetMapping("/rating/{memberId}")
+    public Double findRating(@PathVariable("memberId") Long memberId) {
+    	Double ratingResult = registrationService.findRating(memberId);
+		return ratingResult;
+    }
+    
+    // 7. 잔여 크레딧 조회
+    @GetMapping("/checked-credit")
+    public ResponseEntity<String> findLeftoverCredit(@RequestParam("userId") Long userId) {
+    	
+    	try {
+    		int leftoverCredit = registrationService.findLeftoverCredit(userId);
+        	
+        	if(leftoverCredit > 0) {
+        		String resultMessage = "잔여 크레딧은 " + leftoverCredit + "입니다.";
+    			return ResponseEntity.ok(resultMessage);
+        	} else {
+        		String resultMessage = "잔여 크레딧은 0 입니다.";
+    			return ResponseEntity.ok(resultMessage);
+        	}
+    	} catch (RuntimeException e) {
+    		String message = "(에러) " + + userId + "번 회원의 크레딧 정보가 없습니다." ;
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message); 
+    	} catch (Exception e) {
+            logger.error("(에러) 크레딧 정보를 조회하던 중 에러가 발생했습니다. ");  
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    
+    // 8. 크레딧 차감
+    @PostMapping("/deducted-credit")
+    public ResponseEntity<String> insertCreditByCar(@RequestParam("userId") Long userId) {
+        try {
+        	int leftCredit = registrationService.findLeftoverCredit(userId);
+        	
+        	if(leftCredit >= 7) {
+        		registrationService.insertCreditByCar(userId);
+        	     
+            	String message = "7 크레딧이 차감되었습니다." ;
+                return ResponseEntity.ok(message);
+        	} else {
+        		String message = "잔여 크레딧이 부족합니다." ;
+                return ResponseEntity.ok(message);
+        	}
+        	
+        } catch (RuntimeException e) {
+    		String message = "(에러) " + + userId + "번 사용자에 대한 정보가 없습니다. " + e.getMessage() ;
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message); 
+    	} catch (Exception e) {
+            logger.error("(에러) 크레딧을 차감하던 중 발생했습니다. ");  
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    // 9. 전체 공유 차량 목록 조회 
+    @GetMapping("/all-list")
+    public ResponseEntity<List<AllCarListResponse>> findAllShareCarList() {
+        try {
+            List<AllCarListResponse> allCarList = registrationService.findAllShareCarList();
+            
+            if(allCarList.isEmpty()) {
+            	log.info("(정보) 공유 차량 목록이 없습니다.");
+            	return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+            log.info("(성공) 공유 차량 전체 목록 조회에 성공하였습니다.");
+            return ResponseEntity.ok(allCarList);
+        } catch (Exception e) {
+            log.error("(실패) 공유 차량 전체 목록 조회에 실패하였습니다. : ", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+          } 
     }
 }
