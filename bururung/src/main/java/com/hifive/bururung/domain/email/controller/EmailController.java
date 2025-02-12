@@ -22,8 +22,8 @@ public class EmailController {
 	private final EmailService emailService;
 	
 	@PostMapping("/signup")
-	public ResponseEntity sendSignupMail(HttpSession session, @RequestBody EmailSendRequest emailSendRequest) {
-		String code = emailService.createCode(emailSendRequest.getEmail(), session);
+	public ResponseEntity sendSignupMail(@RequestBody EmailSendRequest emailSendRequest) {
+		String code = emailService.createCode(emailSendRequest.getEmail());
 		emailService.sendAuthenticationMail(EmailType.SIGNUP, emailSendRequest.getEmail(), code);
 		
 		return ResponseEntity.ok().build();
@@ -31,7 +31,7 @@ public class EmailController {
 	
 	@PostMapping("/change-password")
 	public ResponseEntity sendChangePasswordMail(HttpSession session, @RequestBody EmailSendRequest emailSendRequest) {
-		String code = emailService.createCode(emailSendRequest.getEmail(), session);
+		String code = emailService.createCode(emailSendRequest.getEmail());
 		emailService.sendAuthenticationMail(EmailType.CHANGE_PASSWORD, emailSendRequest.getEmail(), code);
 		
 		return ResponseEntity.ok().build();
@@ -39,6 +39,6 @@ public class EmailController {
 	
 	@PostMapping("/check")
 	public ResponseEntity<Boolean> checkSignupAuthentication(HttpSession session, @RequestBody EmailCheckRequest emailCheckRequest) {
-		return ResponseEntity.ok(emailService.isAuthenticated(session, emailCheckRequest.getEmail(), emailCheckRequest.getCode()));
+		return ResponseEntity.ok(emailService.isAuthenticated(emailCheckRequest.getEmail(), emailCheckRequest.getCode()));
 	}
 }
