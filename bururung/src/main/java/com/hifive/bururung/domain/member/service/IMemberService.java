@@ -13,4 +13,5 @@ public interface IMemberService {
 	boolean checkMemberExists(Long memberId);
 	Member findByMemberId(Long memberId);
 	LoginResponse getLoginResponse(String email);
+	boolean checkNicknameDuplicated(String nickname);
 }

@@ -37,6 +37,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/member/logout").permitAll()
                                 .requestMatchers("/api/email/**").permitAll()
                                 .requestMatchers("/api/member/find-email").permitAll()
+                                .requestMatchers("/api/member/check-nickname").permitAll()
                                 .requestMatchers("/api/member/change-password").permitAll()
                                 .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
                                 .requestMatchers("/error").permitAll()

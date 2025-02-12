@@ -103,6 +103,10 @@ public class MemberService implements IMemberService {
 		return new LoginResponse(member.getMemberId(), member.getNickname(), member.getRoleName());
 	}
 	
+	public boolean checkNicknameDuplicated(String nickname) {
+		return memberRepository.findByNickname(nickname).isPresent();
+	}
+	
 	private void saveRefreshToken(String email, String refreshToken) {
 		redisUtil.setData(REFRESH_TOKEN_PREFIX + email, refreshToken, Duration.ofSeconds(refreshTokenValidity));
 	}
