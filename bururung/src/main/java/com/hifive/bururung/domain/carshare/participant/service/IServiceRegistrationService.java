@@ -8,6 +8,7 @@ import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareList
 import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse;
+import com.hifive.bururung.domain.carshare.participant.dto.PastParticipationListResponse;
 
 public interface IServiceRegistrationService {
 	List<AvailableCarShareListResponse> getAvailableCarShareList();
@@ -19,4 +20,9 @@ public interface IServiceRegistrationService {
 	int findLeftoverCredit(Long userId);
 	void insertCreditByCar(Long userId);
 	List<AllCarListResponse> findAllShareCarList();
+	PastParticipationListResponse findPastParticipationList(Long userId);
+	List<PastParticipationListResponse> findTodayParticipationList(Long userId);
+	int updateStateOK(Long carShareJoinId);
+	int updateStateNO(Long carShareJoinId);
+	List<AllCarListResponse> findByCategoryShareCarList(String category);
 }
