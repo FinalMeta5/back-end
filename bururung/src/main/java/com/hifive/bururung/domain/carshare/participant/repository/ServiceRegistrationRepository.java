@@ -48,4 +48,13 @@ public interface ServiceRegistrationRepository {
 	
 	// 11. 오늘 차량 탑승 내역 조회
 	List<PastParticipationListResponse> findTodayParticipationList(Long userId);
+	
+	// 12. 탑승 여부 탄다로 변경
+	int updateStateOK(Long carShareJoinId);
+	
+	// 13. 탑승 여부 안탄다로 변경
+	int updateStateNO(Long carShareJoinId);
+	
+	// 14. 카테고리 별 공유차량 목록 조회
+	List<AllCarListResponse> findByCategoryShareCarList(String category);
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TodayParticipationListResponse {
 	private Long carShareRegiId;
-	private Long carShareJoiniId;
+	private Long carShareJoinId;
 	private String state;
 	private Long memberId;
 	private String pickupDate;

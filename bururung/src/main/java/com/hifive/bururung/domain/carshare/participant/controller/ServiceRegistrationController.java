@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -222,7 +223,7 @@ public class ServiceRegistrationController {
         } catch (Exception e) {
             log.error("(실패) 공유 차량 전체 목록 조회에 실패하였습니다. : ", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-          } 
+         } 
     }
     
     // 10. 과거 차량 탑승 내역 조회
@@ -251,5 +252,35 @@ public class ServiceRegistrationController {
     public ResponseEntity<List<PastParticipationListResponse>> findTodayParticipationList(@RequestParam("userId") Long userId) {
     	List<PastParticipationListResponse> participationList = registrationService.findTodayParticipationList(userId);
         return ResponseEntity.ok(participationList);
+    }
+    
+    // 12. 탑승 여부 탄다로 변경
+    @PutMapping("/{carShareJoinId}/state-ok")
+    public int updateStateOK(@PathVariable("carShareJoinId") Long carShareJoinId) {
+        return registrationService.updateStateOK(carShareJoinId);
+    }
+    
+    // 13. 탑승 여부 안탄다로 변경
+    @PutMapping("/{carShareJoinId}/state-no")
+    public int updateStateNO(@PathVariable("carShareJoinId") Long carShareJoinId) {
+        return registrationService.updateStateNO(carShareJoinId);
+    }
+    
+    // 14. 카테고리 별 공유차량 목록 조회
+    @GetMapping("/list/category")
+    public ResponseEntity<List<AllCarListResponse>> findByCategoryShareCarList(@RequestParam("category") String category) {
+    	try {
+    		List<AllCarListResponse> categoryCarList = registrationService.findByCategoryShareCarList(category);
+            
+            if(categoryCarList == null) {
+            	log.info("(정보) 공유 차량 목록이 없습니다.");
+            	return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+            log.info("(성공) 공유 차량 전체 목록 조회에 성공하였습니다.");
+            return ResponseEntity.ok(categoryCarList);
+        } catch (Exception e) {
+            log.error("(실패) 공유 차량 전체 목록 조회에 실패하였습니다. : ", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } 
     }
 }
