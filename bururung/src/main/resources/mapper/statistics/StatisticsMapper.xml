@@ -23,8 +23,10 @@
     </select>
     
     <select id="getMembersByRatingDesc" resultType="com.hifive.bururung.domain.statistics.dto.MemberNameWithRateResponse">
-		SELECT name AS "name", avg_rate AS "avgRate"
-		FROM v_member_avg_rate
-		ORDER BY avg_rate DESC
+		SELECT m.name AS "name", AVG(r.rate) AS "avgRate"
+		FROM review r
+		JOIN member m ON r.driver_id=m.member_id
+		GROUP BY r.driver_id, m.name
+		ORDER BY "avgRate" DESC
     </select>
 </mapper>
