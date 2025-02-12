@@ -97,15 +97,16 @@ public class AdminController {
 		}
 	}
 	
-	@PostMapping("/reqUpdateRegi/{memberId}")
-	public ResponseEntity<String> requestUpdateRegistration(@PathVariable("memberId") Long memberId) {
+	@PostMapping("/reqUpdateRegi")
+	public ResponseEntity<String> requestUpdateRegistration(@RequestBody AdminCarRegistrationRequest registration) {
 		try {
 			Notification notification = new Notification();
 			notification.setCategory("인증 실패");
 			notification.setServiceCtg("차량 등록");
 			notification.setContent("차량을 인증할 수 없습니다.\n다시 작성해주시면 감사하겠습니다.");
 			notification.setSenderId(41l);
-			notification.setRecipientId(memberId);
+			notification.setRecipientId(registration.getMemberId());
+			adminService.deleteRegistration(registration.getCarId());
 			notificationService.sendNotification(notification);
 			return ResponseEntity.ok("ok");
 		} catch (Exception e) {

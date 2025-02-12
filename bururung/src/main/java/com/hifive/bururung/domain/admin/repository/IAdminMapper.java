@@ -29,4 +29,6 @@ public interface IAdminMapper {
 
 	void updateMemberToDriver(Long memberId);
 
+	void deleteRegistration(Long carId);
+
 }
