@@ -32,6 +32,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+<<<<<<< HEAD
 //                                .requestMatchers("/api/member/login").permitAll()
 //                                .requestMatchers("/api/member/signup").permitAll()
 //                                .requestMatchers("/api/email/**").permitAll()
@@ -43,6 +44,30 @@ public class SecurityConfig {
 //
 //                                .anyRequest().authenticated()
                 		.requestMatchers("/**").permitAll()
+=======
+                                .requestMatchers("/api/member/login").permitAll()
+                                .requestMatchers("/api/member/signup").permitAll()
+                                .requestMatchers("/api/member/logout").permitAll()
+                                .requestMatchers("/api/email/**").permitAll()
+                                .requestMatchers("/api/member/find-email").permitAll()
+                                .requestMatchers("/api/member/check-nickname").permitAll()
+                                .requestMatchers("/api/member/change-password").permitAll()
+                                .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
+                                .requestMatchers("/error").permitAll()
+                                .requestMatchers("/api/car-share/**").hasRole("DRIVER")
+                                .requestMatchers("/api/carshare/registration/available-list").permitAll()
+                                .requestMatchers("/api/taxi/**").permitAll()
+                                .requestMatchers("/api/carshare/registration").permitAll()
+                                .requestMatchers("/api/car-share/register").hasRole("DRIVER")
+                                .requestMatchers("/api/car-shar/my-list").permitAll()
+                                .requestMatchers("/api/scheduling/**").permitAll()
+                                .requestMatchers("/api/admin/**").hasRole("OPERATOR")
+                                .requestMatchers("/api/statistics/**").hasRole("OPERATOR")
+                                .requestMatchers("/api/notifications/**").authenticated()
+
+                                .anyRequest().authenticated()
+//                      .requestMatchers("/**").permitAll()
+>>>>>>> f8fe8e45b820cd0b022741f204bfa82b66332d32
                 )
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

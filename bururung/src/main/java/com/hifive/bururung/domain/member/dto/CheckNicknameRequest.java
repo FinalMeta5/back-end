@@ -1,5 +1,7 @@
 package com.hifive.bururung.domain.member.dto;
 
+import com.hifive.bururung.domain.credit.entity.MemberCreditState;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +11,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenDTO {
-	
-	private String accessToken;
-	
-	private String refreshToken;
+public class CheckNicknameRequest {
+	private String nickname;
 }

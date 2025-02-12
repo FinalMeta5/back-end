@@ -57,9 +57,8 @@ public class TaxiShareJoinController {
 		Member participantInfo = memberService.findByMemberId(taxiShareJoinRequest.getMemberId());
 		if (duplCnt < 1) { // 참여한 적이 없으면
 			if (isHost < 1) { // 호스트가 아니면
-				// 택시 조인 insert(참여)
-				taxiShareJoinService.insertTaxiShareJoin(taxiShareJoinRequest);
-
+				// 크레딧 차감
+				taxiShareJoinService.insertCreditByTaxi(2, taxiShareJoinRequest.getMemberId());
 				// 알림 보내기
 				// 참여자에게 보내기 => type=1
 				Notification notification2Participant = TaxiShareJoinAction.getTaxiShareJoinNotiInfo(taxiSahreResponse,
@@ -71,8 +70,9 @@ public class TaxiShareJoinController {
 						taxiShareJoinRequest, participantInfo,hostInfo, 2);
 				System.out.println(notification2Host.toString());
 				notificationService.sendNotification(notification2Host);
-				// 크레딧 차감
-				// 나중에
+				// 택시 조인 insert(참여)
+				taxiShareJoinService.insertTaxiShareJoin(taxiShareJoinRequest);
+				
 				return ResponseEntity.status(HttpStatus.CREATED).build();
 			} else {
 				System.out.println("본인이 호스트인 방엔 참여할 수 없음!!");

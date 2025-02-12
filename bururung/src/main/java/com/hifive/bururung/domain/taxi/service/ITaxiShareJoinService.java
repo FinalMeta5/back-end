@@ -12,4 +12,7 @@ public interface ITaxiShareJoinService {
 	int getDuplCntByTaxiShareIdAndMemberId(TaxiShareJoinRequest taxiShareJoinRequest);
 	List<Long> getMemberIdByTaxiShareId(Long taxiShareId);
 	void deleteTaxiShareJoinByTaxiShareId(Long taxiShareId);
+	void insertCreditByTaxi(int count, Long memberId);
+	int findLeftoverCredit(Long memberId);
+	List<HashMap<String, Object>> getCarShareCountByMemberIdAndSysdate();
 }

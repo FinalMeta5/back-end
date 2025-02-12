@@ -1,5 +1,6 @@
 package com.hifive.bururung.domain.taxi.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,30 @@ public class TaxiShareJoinService implements ITaxiShareJoinService {
 		}
 		
 	}
+	
+	@Override
+	public int findLeftoverCredit(Long memberId) {
+		return taxiShareJoinRepository.findLeftoverCredit(memberId);
+	}
+	
+	@Override
+	public void insertCreditByTaxi(int count, Long memberId) {
+		if(taxiShareJoinRepository.findLeftoverCredit(memberId)>=count) {
+			taxiShareJoinRepository.insertCreditByTaxi(count, memberId);
+		}else {
+			throw new CustomException(TaxiShareJoinErrorCode.CREDIT_DEDUCTED_FAILED);
+		}
+	}
+	//차량공유 알림 스케줄링
+	@Override
+	public List<HashMap<String, Object>> getCarShareCountByMemberIdAndSysdate() {
+		try {
+			List<HashMap<String, Object>> list = taxiShareJoinRepository.getCarShareCountByMemberIdAndSysdate();
+			return list;
+		}catch(Exception e) {
+			throw new CustomException(TaxiShareJoinErrorCode.CAR_SHARE_SYSDATE_NOT_FOUND);
+		}
+	}
+
 
 }

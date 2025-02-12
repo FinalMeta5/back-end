@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hifive.bururung.domain.member.repository.MypageMapper">
+    <select id="getCreditHistoryByDate" parameterType="map" resultType="CreditHistoryDTO">
+      SELECT member_credit_id, count as "creditCount", TO_CHAR(transaction_date,'YYYY-MM-DD') as "date", state
+      FROM MEMBER_CREDIT
+      WHERE MEMBER_ID = #{memberId} 
+            AND TRANSACTION_DATE >= TO_TIMESTAMP(
+                  #{year} || '-' || LPAD(#{month}, 2, '0') || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+            AND TRANSACTION_DATE &lt; ADD_MONTHS(
+                  TO_TIMESTAMP(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 1)
+      ORDER BY TRANSACTION_DATE desc
+    </select>
+    
+    <select id="getMypage" parameterType="Long" resultType="MypageResponse">
+    SELECT
+	  (SELECT COUNT(*) FROM CAR_SHARE_REGISTRATION WHERE member_id = #{memberId}) AS carRegistrationCount,
+	  (SELECT COUNT(*) FROM CAR_SHARE_JOIN WHERE member_id = #{memberId}) AS carJoinCount,
+	  (SELECT COUNT(*) FROM TAXI_SHARE_JOIN WHERE member_id = #{memberId}) AS taxiJoinCount,
+	  (SELECT IMAGE_URL FROM MEMBER WHERE member_id = #{memberId}) AS imageUrl
+	FROM dual
+    </select>
+</mapper>

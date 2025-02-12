@@ -46,6 +46,8 @@ spring:
 mybatis:
   type-aliases-package: com.hifive.bururung
   mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
 
 server:
   servlet:
