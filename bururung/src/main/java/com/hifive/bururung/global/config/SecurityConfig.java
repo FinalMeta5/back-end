@@ -32,23 +32,17 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/api/member/login").permitAll()
-                                .requestMatchers("/api/member/signup").permitAll()
-                                .requestMatchers("/api/member/logout").permitAll()
-                                .requestMatchers("/api/email/**").permitAll()
-                                .requestMatchers("/api/member/find-email").permitAll()
-                                .requestMatchers("/api/member/change-password").permitAll()
-                                .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
-                                .requestMatchers("/error").permitAll()
-                                .requestMatchers("/api/car-share/**").hasRole("DRIVER")
-                                .requestMatchers("/api/carshare/registration/available-list").permitAll()
-                                .requestMatchers("/api/taxi/**").permitAll()
-                                .requestMatchers("/api/carshare/registration").permitAll()
-                                .requestMatchers("/api/car-share/register").hasRole("DRIVER")
-                                .requestMatchers("/api/car-shar/my-list").permitAll()
-
-                                .anyRequest().authenticated()
-//                      .requestMatchers("/**").permitAll()
+//                                .requestMatchers("/api/member/login").permitAll()
+//                                .requestMatchers("/api/member/signup").permitAll()
+//                                .requestMatchers("/api/email/**").permitAll()
+//                                .requestMatchers("/api/member/find-email").permitAll()
+//                                .requestMatchers("/api/member/change-password").permitAll()
+//                                .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
+//                                .requestMatchers("/error").permitAll()
+//                                .requestMatchers("/api/carshare/registration/available-list").permitAll()
+//
+//                                .anyRequest().authenticated()
+                		.requestMatchers("/**").permitAll()
                 )
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

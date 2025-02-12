@@ -106,4 +106,22 @@ public class ServiceRegistrationService implements IServiceRegistrationService{
 		List<PastParticipationListResponse> result = serviceRegistrationRepository.findTodayParticipationList(userId);
 		return result != null ? result : Collections.emptyList();
 	}
+
+	// 12. 탑승 여부 탄다로 변경
+	@Override
+	public int updateStateOK(Long carShareJoinId) {
+		return serviceRegistrationRepository.updateStateOK(carShareJoinId);
+	}
+
+	// 13. 탑승 여부 안탄다로 변경
+	@Override
+	public int updateStateNO(Long carShareJoinId) {
+		return serviceRegistrationRepository.updateStateNO(carShareJoinId);
+	}
+
+	// 14. 카테고리 별 공유차량 목록 조회
+	@Override
+	public List<AllCarListResponse> findByCategoryShareCarList(String category) {
+		return serviceRegistrationRepository.findByCategoryShareCarList(category);
+	}
 }
