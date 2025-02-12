@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hifive.bururung.domain.member.dto.ChangePasswordRequest;
 import com.hifive.bururung.domain.member.dto.FindEmailRequest;
 import com.hifive.bururung.domain.member.dto.LoginRequest;
+import com.hifive.bururung.domain.member.dto.LoginResponse;
 import com.hifive.bururung.domain.member.dto.SignupRequest;
 import com.hifive.bururung.domain.member.dto.TokenDTO;
 import com.hifive.bururung.domain.member.service.IMemberService;
@@ -31,13 +32,13 @@ public class MemberController {
 	private Long refreshTokenValidity;
 	
 	@PostMapping("/login")
-	public ResponseEntity<String> login(HttpServletResponse response, @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<LoginResponse> login(HttpServletResponse response, @RequestBody LoginRequest loginRequest) {
 		TokenDTO token = memberService.login(loginRequest.getEmail(), loginRequest.getPassword());
 		
 		setAccessToken(response, token.getAccessToken());
 		setRefreshToken(response, token.getRefreshToken());
 		
-		return ResponseEntity.ok(token.getEmail());
+		return ResponseEntity.ok(memberService.getLoginResponse(loginRequest.getEmail()));
 	}
 	
 	@PostMapping("/signup")

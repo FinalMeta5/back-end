@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hifive.bururung.domain.member.dto.LoginResponse;
 import com.hifive.bururung.domain.member.dto.SignupRequest;
 import com.hifive.bururung.domain.member.dto.TokenDTO;
 import com.hifive.bururung.domain.member.entity.Member;
@@ -47,7 +48,7 @@ public class MemberService implements IMemberService {
 		
 		saveRefreshToken(authentication.getName(), refreshToken);
 		
-		return new TokenDTO(accessToken, refreshToken, authentication.getName());
+		return new TokenDTO(accessToken, refreshToken);
 	}
 	
 	@Override
@@ -93,6 +94,13 @@ public class MemberService implements IMemberService {
 		member.changePassword(passwordEncoder.encode(password));
 		
 		return member.getMemberId();
+	}
+	
+	public LoginResponse getLoginResponse(String email) {
+		Member member = memberRepository.findByEmail(email)
+		.orElseThrow(() -> new CustomException(MemberErrorCode.USER_NOT_FOUND));
+		
+		return new LoginResponse(member.getMemberId(), member.getNickname(), member.getRoleName());
 	}
 	
 	private void saveRefreshToken(String email, String refreshToken) {
