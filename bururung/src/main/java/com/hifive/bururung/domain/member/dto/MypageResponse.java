@@ -9,9 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenDTO {
+public class MypageResponse {
+	private Integer carRegistrationCount;
 	
-	private String accessToken;
+	private Integer carJoinCount;
 	
-	private String refreshToken;
+	private Integer taxiJoinCount;
+	
+	private String imageUrl;
 }
