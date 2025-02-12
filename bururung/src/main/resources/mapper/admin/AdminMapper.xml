@@ -93,4 +93,9 @@
     	SET role_name='DRIVER'
     	WHERE member_id=#{memberId}
     </update>
+    
+    <delete id="deleteRegistration" parameterType="long">
+    	DELETE FROM car_registration
+    	WHERE car_id=#{carId}
+    </delete>
 </mapper>
