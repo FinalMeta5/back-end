@@ -33,7 +33,7 @@ public class TaxiShareService implements ITaxiShareService{
 		try {			
 			taxiShareRepository.insertTaxiShare(taxiShare);
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
+			throw new CustomException(TaxiShareErrorCode.TAXI_SHARE_INSERT_FAILED);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class TaxiShareService implements ITaxiShareService{
 			int result = taxiShareRepository.deleteTaxiShare(taxiShareJoinRequest);
 			return result;
 		}catch(Exception e) {
-			System.out.println("deleteTaxiShare 예외 발생 --> "+e.getMessage());
+//			System.out.println("deleteTaxiShare 예외 발생 --> "+e.getMessage());
 			throw new CustomException(TaxiShareErrorCode.TAXI_SHARE_DELETE_FAILED);
 		}
 	}
