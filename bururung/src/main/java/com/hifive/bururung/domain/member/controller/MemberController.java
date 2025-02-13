@@ -51,7 +51,7 @@ public class MemberController {
 		return ResponseEntity.ok(memberId);
 	}
 	
-	@GetMapping("/find-email")
+	@PostMapping("/find-email")
 	public ResponseEntity<String> findId(@RequestBody FindEmailRequest findEmailRequest) {
 		return ResponseEntity.ok(memberService.findEmail(findEmailRequest.getName(), findEmailRequest.getPhone()));
 	}
