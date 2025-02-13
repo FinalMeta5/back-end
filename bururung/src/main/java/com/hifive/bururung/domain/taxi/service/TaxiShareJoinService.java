@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest;
+import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinResponse;
 import com.hifive.bururung.domain.taxi.repository.ITaxiShareJoinRepository;
 import com.hifive.bururung.global.exception.CustomException;
 import com.hifive.bururung.global.exception.errorcode.TaxiShareJoinErrorCode;
@@ -81,6 +82,15 @@ public class TaxiShareJoinService implements ITaxiShareJoinService {
 			return list;
 		}catch(Exception e) {
 			throw new CustomException(TaxiShareJoinErrorCode.CAR_SHARE_SYSDATE_NOT_FOUND);
+		}
+	}
+
+	@Override
+	public List<TaxiShareJoinResponse> getTaxiShareByMemberIdOnToday(Long memberId) {
+		try {
+			return taxiShareJoinRepository.getTaxiShareByMemberIdOnToday(memberId);
+		}catch(Exception e) {
+			throw new CustomException(TaxiShareJoinErrorCode.JOIN_NOT_FOUND);
 		}
 	}
 

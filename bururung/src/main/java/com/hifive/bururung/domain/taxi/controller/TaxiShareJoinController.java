@@ -1,6 +1,7 @@
 package com.hifive.bururung.domain.taxi.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import com.hifive.bururung.domain.member.service.IMemberService;
 import com.hifive.bururung.domain.notification.entity.Notification;
 import com.hifive.bururung.domain.notification.service.INotificationService;
 import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest;
+import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinResponse;
 import com.hifive.bururung.domain.taxi.dto.TaxiShareResponse;
 import com.hifive.bururung.domain.taxi.service.ITaxiShareJoinService;
 import com.hifive.bururung.domain.taxi.service.ITaxiShareService;
@@ -82,5 +84,11 @@ public class TaxiShareJoinController {
 			System.out.println("한사람이 똑같은 방에 참여할 수 없음!!!");
 			throw new CustomException(TaxiShareJoinErrorCode.DUPLICATE_JOIN_ATTEMPT);
 		}
+	}
+	
+	@GetMapping("/count/byMemberIdToday/{memberId}")
+	public ResponseEntity<List<TaxiShareJoinResponse>> getTaxiShareByMemberIdOnToday(@PathVariable("memberId") Long memberId){
+		List<TaxiShareJoinResponse> todayTaxiShareList = taxiShareJoinService.getTaxiShareByMemberIdOnToday(memberId);
+		return ResponseEntity.ok(todayTaxiShareList);
 	}
 }
