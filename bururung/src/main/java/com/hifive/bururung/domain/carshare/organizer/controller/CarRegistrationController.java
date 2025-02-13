@@ -24,6 +24,8 @@ import com.hifive.bururung.domain.carshare.organizer.entity.CarRegistration;
 import com.hifive.bururung.domain.carshare.organizer.service.ICarRegistrationService;
 import com.hifive.bururung.domain.member.entity.Member;
 import com.hifive.bururung.domain.member.service.MemberService;
+import com.hifive.bururung.domain.notification.entity.Notification;
+import com.hifive.bururung.domain.notification.service.INotificationService;
 import com.hifive.bururung.global.common.s3.FileSubPath;
 import com.hifive.bururung.global.common.s3.S3Uploader;
 import com.hifive.bururung.global.common.s3.UploadFileDTO;
@@ -34,15 +36,18 @@ import com.hifive.bururung.global.util.SecurityUtil;
 @RestController
 @RequestMapping("/api/car-registration")
 public class CarRegistrationController {
+	private final static Long OPERRATOR_ID = 41L;
 	private final ICarRegistrationService carRegistrationService;
 	private final MemberService  memberService;
 	private final S3Uploader s3Uploader;
+	private final INotificationService notificationService;
 	
 	public CarRegistrationController(ICarRegistrationService carRegistrationService, 
-			MemberService memberService, S3Uploader s3Uploader) {
+			MemberService memberService, S3Uploader s3Uploader, INotificationService notificationService) {
 		this.carRegistrationService = carRegistrationService;
 		this.memberService = memberService;
 		this.s3Uploader = s3Uploader;
+		this.notificationService = notificationService;
 	}
 	
 	// 공백 제거 유틸 메서드
@@ -129,8 +134,43 @@ public class CarRegistrationController {
 	    car.setVerifiedFile(agreementFileUrl); // 가장 최근 파일만 저장
 
 	    carRegistrationService.registerCar(car);
+	    
+	    Notification notification = new Notification();
+	    notification.setSenderId(sessionMemberId);
+	    notification.setRecipientId(OPERRATOR_ID);
+	    notification.setContent("새로운 차량 등록 요청입니다. \n [ 차량 번호 : " + cleanedCarNumber + " ]");
+	    notification.setCategory("인증 요청");
+	    notification.setServiceCtg("차량 등록");
+	    
+	    notificationService.sendNotification(notification);
+	    System.out.println(notification);
 
 	    return ResponseEntity.ok("차량이 성공적으로 등록되었습니다.");
+	}
+	
+	@PostMapping("/re-registration/{memberId}")
+	public ResponseEntity<String> sendReRegiInfoByOperator() {
+		
+	    Long sessionMemberId;
+	    try {
+	        sessionMemberId = SecurityUtil.getCurrentMemberId(); // ✅ 공통 메서드로 호출
+	    } catch (IllegalArgumentException | IllegalStateException e) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+	    }
+	    Member member = memberService.findByMemberId(sessionMemberId);
+	    String memberName = member.getName();
+	    
+	    Notification notification = new Notification();
+	    notification.setSenderId(sessionMemberId);
+	    notification.setRecipientId(OPERRATOR_ID);
+	    notification.setContent(" 차량 재등록 요청입니다. \n [ 회원 이름 : " + memberName + " ]");
+	    notification.setCategory("인증 재요청");
+	    notification.setServiceCtg("차량 재등록");
+	    
+	    notificationService.sendNotification(notification);
+	    System.out.println(notification);
+	    
+	    return ResponseEntity.ok("재등록 요청이 완료되었습니다.");
 	}
 	
 	// read : 전체 조회, 차량번호로 조회, 회원아이디로 조회, 차량 아이디로 조회
@@ -264,7 +304,8 @@ public class CarRegistrationController {
 	    if (!car.getMember().getMemberId().equals(sessionMemberId)) {
 	        throw new CustomException(CarRegistrationErrorCode.ROLE_NOT_DELETE);
 	    }
-
+	    
+	    
 	    carRegistrationService.deleteCar(carId);
 	    return ResponseEntity.ok("차량이 성공적으로 삭제되었습니다.");
 	}

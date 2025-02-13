@@ -52,6 +52,8 @@ public class SecurityConfig {
                                 .requestMatchers("/api/admin/**").hasRole("OPERATOR")
                                 .requestMatchers("/api/statistics/**").hasRole("OPERATOR")
                                 .requestMatchers("/api/notifications/**").authenticated()
+                                .requestMatchers("/api/car-share/participants/**").permitAll()
+
                                 .anyRequest().authenticated()
 //                      .requestMatchers("/**").permitAll()
 
