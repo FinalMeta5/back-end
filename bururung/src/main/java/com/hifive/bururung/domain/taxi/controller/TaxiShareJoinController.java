@@ -65,23 +65,23 @@ public class TaxiShareJoinController {
 				// 참여자에게 보내기 => type=1
 				Notification notification2Participant = TaxiShareJoinAction.getTaxiShareJoinNotiInfo(taxiSahreResponse,
 						taxiShareJoinRequest, participantInfo,hostInfo, 1);
-				System.out.println(notification2Participant.toString());
+//				System.out.println(notification2Participant.toString());
 				notificationService.sendNotification(notification2Participant);
 				// 호스트에게 보내기=> type=2
 				Notification notification2Host = TaxiShareJoinAction.getTaxiShareJoinNotiInfo(taxiSahreResponse,
 						taxiShareJoinRequest, participantInfo,hostInfo, 2);
-				System.out.println(notification2Host.toString());
+//				System.out.println(notification2Host.toString());
 				notificationService.sendNotification(notification2Host);
 				// 택시 조인 insert(참여)
 				taxiShareJoinService.insertTaxiShareJoin(taxiShareJoinRequest);
 				
 				return ResponseEntity.status(HttpStatus.CREATED).build();
 			} else {
-				System.out.println("본인이 호스트인 방엔 참여할 수 없음!!");
+//				System.out.println("본인이 호스트인 방엔 참여할 수 없음!!");
 				throw new CustomException(TaxiShareJoinErrorCode.CANNOT_JOIN_OWN_SHARE);
 			}
 		} else {
-			System.out.println("한사람이 똑같은 방에 참여할 수 없음!!!");
+//			System.out.println("한사람이 똑같은 방에 참여할 수 없음!!!");
 			throw new CustomException(TaxiShareJoinErrorCode.DUPLICATE_JOIN_ATTEMPT);
 		}
 	}

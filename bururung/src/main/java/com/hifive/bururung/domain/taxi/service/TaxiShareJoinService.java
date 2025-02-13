@@ -53,12 +53,7 @@ public class TaxiShareJoinService implements ITaxiShareJoinService {
 
 	@Override
 	public void deleteTaxiShareJoinByTaxiShareId(Long taxiShareId) {
-		try {			
-			taxiShareJoinRepository.deleteTaxiShareJoinById(taxiShareId);
-		}catch(Exception e) {
-			System.out.println("deleteTaxiShareJoinByTaxiShareId 예외: ==> "+e.getMessage());
-		}
-		
+		taxiShareJoinRepository.deleteTaxiShareJoinById(taxiShareId);
 	}
 	
 	@Override
