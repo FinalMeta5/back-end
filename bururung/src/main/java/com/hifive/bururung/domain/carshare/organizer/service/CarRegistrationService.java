@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hifive.bururung.domain.carshare.organizer.entity.CarRegistration;
 import com.hifive.bururung.domain.carshare.organizer.repository.CarRegistrationRepository;
+import com.hifive.bururung.domain.carshare.organizer.repository.CarShareMapper;
 import com.hifive.bururung.global.common.s3.S3Uploader;
 import com.hifive.bururung.global.common.s3.UploadFileDTO;
 import com.hifive.bururung.global.exception.CustomException;
@@ -22,10 +23,13 @@ import jakarta.transaction.Transactional;
 public class CarRegistrationService implements ICarRegistrationService {
 	private final CarRegistrationRepository carRegistrationRepository;
 	private final S3Uploader s3Uploader;
+	private final CarShareMapper  carShareMapper ;
 	
-	public CarRegistrationService(CarRegistrationRepository carRegistrationRepository, S3Uploader s3Uploader) {
+	public CarRegistrationService(CarRegistrationRepository carRegistrationRepository, S3Uploader s3Uploader, 
+			CarShareMapper carShareMapper) {
 		this.carRegistrationRepository = carRegistrationRepository;
 		this.s3Uploader = s3Uploader;
+		this.carShareMapper  = carShareMapper ;
 	}
 	
 	
@@ -70,14 +74,17 @@ public class CarRegistrationService implements ICarRegistrationService {
 		 return carRegistrationRepository.save(car);
 	}
 
-	@Override
-	public void deleteCar(Long carId) {
-		if (carRegistrationRepository.existsById(carId)) {
-			carRegistrationRepository.deleteById(carId);
-		} else {
-			throw new RuntimeException("해당 차량이 존재하지 않습니다.");
-		}
-	}
+    @Override
+    public void deleteCar(Long carId) {
+        // 1. car_share 테이블에서 해당 carId가 존재하는지 확인
+        if (carShareMapper.countByCarId(carId) > 0) {
+            // 2. 존재하면 해당 carId를 0으로 변경
+        	carShareMapper.updateCarIdToZero(carId);
+        }
+
+        // 3. 차량 삭제
+        carRegistrationRepository.deleteById(carId);
+    }
 
 
 	@Override
