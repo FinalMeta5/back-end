@@ -1,7 +1,10 @@
 package com.hifive.bururung.global.common.s3;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +45,32 @@ public class S3Uploader {
         log.info("S3에 파일 전송 완료 originalFileName = {},fileSubPath = {}, storeUrl={}", originalFileName, subPath, storeFileUrl);
         return new UploadFileDTO(storeFileName, storeFileUrl);
     }
+    
+
+    public String uploadLogFile(File logFile, String logPath) throws IOException {
+        if (!logFile.exists() || logFile.length() == 0) {
+            log.warn("🚨 업로드할 로그 파일이 존재하지 않거나 비어 있음: {}", logFile.getPath());
+            throw new CustomException(FileErrorCode.FILE_EMPTY);
+        }
+
+        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String s3Path = "logs/aop-logs/" + today + "/" + logFile.getName(); // ✅ AOP 로그는 특정 폴더로 고정
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("text/plain; charset=UTF-8");  // ✅ 한글 깨짐 방지
+        metadata.setContentEncoding("UTF-8");  // ✅ 한글 인코딩 추가
+        metadata.setContentLength(logFile.length());
+
+        try (FileInputStream inputStream = new FileInputStream(logFile)) {
+            amazonS3Client.putObject(new PutObjectRequest(bucket, s3Path, inputStream, metadata)
+                    .withCannedAcl(CannedAccessControlList.Private));
+        }
+
+        String fileUrl = amazonS3Client.getUrl(bucket, s3Path).toString();
+        log.info("✅ 로그 파일 S3 업로드 성공 - S3 경로: {}, URL: {}", s3Path, fileUrl);
+        return fileUrl;
+    }
+	   
     
     private String sendAwsS3(String bucketName, String filePath, MultipartFile uploadFile) throws IOException {
         ObjectMetadata objectMetadata = new ObjectMetadata();

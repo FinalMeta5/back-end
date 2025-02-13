@@ -39,7 +39,6 @@ public class CarShareController {
     @PostMapping("/register")
     public ResponseEntity<String> registerCarShare(@RequestBody CarShareRegiRequestDTO request, Authentication authentication) {
         if (request == null) {
-            System.out.println("❌ 요청 데이터가 null 입니다.");
             return ResponseEntity.badRequest().body("요청 데이터가 없습니다.");
         }
 
