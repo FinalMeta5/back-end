@@ -20,5 +20,4 @@
 		INSERT INTO member_credit(MEMBER_CREDIT_ID, count, state, transaction_date, member_id)
 		VALUES (member_credit_seq.NEXTVAL, 7, 'CAR', LOCALTIMESTAMP, #{userId})
 	</insert>
-	
 </mapper>

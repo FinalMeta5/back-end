@@ -18,4 +18,6 @@ public class AllCarListResponse {
 	private Long longitudeDs;
 	private String pickupDate;
 	private String category;
+	private String pickupLoc;
+	private String destination;
 }
