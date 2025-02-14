@@ -26,10 +26,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //        return registrationBean;
 //    }
 
-	@Bean
-	public ErrorPageFilter errorPageFilter() {
-	    return new ErrorPageFilter();
-	}
+//	@Bean
+//	public ErrorPageFilter errorPageFilter() {
+//	    return new ErrorPageFilter();
+//	}
 
 	@Bean
 	public FilterRegistrationBean<ErrorPageFilter> disableSpringBootErrorFilter(ErrorPageFilter filter) {
