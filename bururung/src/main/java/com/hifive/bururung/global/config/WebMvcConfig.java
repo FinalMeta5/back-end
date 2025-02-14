@@ -26,18 +26,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //        return registrationBean;
 //    }
 
-//	@Bean
-//	public ErrorPageFilter errorPageFilter() {
-//	    return new ErrorPageFilter();
-//	}
-
-	@Bean
-	public FilterRegistrationBean<ErrorPageFilter> disableSpringBootErrorFilter(ErrorPageFilter filter) {
-	    FilterRegistrationBean<ErrorPageFilter> filterRegistrationBean = new FilterRegistrationBean<>(filter);
-	    filterRegistrationBean.setEnabled(false);
-	    return filterRegistrationBean;
-	}
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // 모든 엔드포인트에 적용
