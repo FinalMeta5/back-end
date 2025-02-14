@@ -230,7 +230,7 @@ public class ServiceRegistrationController {
     @GetMapping("/past-list")
     public ResponseEntity<Object> findPastParticipationList(@RequestParam("userId") Long userId) {
     	try {
-    		PastParticipationListResponse pastParticipationResponse = registrationService.findPastParticipationList(userId);
+    		List<PastParticipationListResponse> pastParticipationResponse = registrationService.findPastParticipationList(userId);
     		
     		if (pastParticipationResponse == null) {
     			String message = "(정보) " + userId + "번 사용자의 과거 탑승 내역이 없습니다." ;
@@ -239,7 +239,7 @@ public class ServiceRegistrationController {
     		
             return ResponseEntity.ok(pastParticipationResponse);
         } catch (RuntimeException e) {
-        	String message = "(정보) " + + userId + "번 사용자의 과거 탑승 내역이 없습니다." ;
+        	String message = "(정보) " + + userId + "번 사용자의 과거 탑승 내역이 없습니다." + e.getMessage() ;
         	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message); 
     	} catch (Exception e) {
             logger.error("과거 탑승 내역을 조회하던 중 에러가 발생했습니다.");  
@@ -284,4 +284,5 @@ public class ServiceRegistrationController {
         } 
     }
    
+    // 15. 예약하기 
 }

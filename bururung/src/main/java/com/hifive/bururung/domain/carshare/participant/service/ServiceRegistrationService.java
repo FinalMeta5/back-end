@@ -96,7 +96,7 @@ public class ServiceRegistrationService implements IServiceRegistrationService{
 	
 	// 10. 과거 차량 탑승 내역 조회
 	@Override
-	public PastParticipationListResponse findPastParticipationList(Long userId) {
+	public List<PastParticipationListResponse> findPastParticipationList(Long userId) {
 		return serviceRegistrationRepository.findPastParticipationList(userId);
 	}
 

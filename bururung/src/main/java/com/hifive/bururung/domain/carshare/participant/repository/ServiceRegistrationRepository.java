@@ -44,7 +44,7 @@ public interface ServiceRegistrationRepository {
 	List<AllCarListResponse> findAllShareCarList();
 	
 	// 10. 과거 차량 탑승 내역 조회
-	PastParticipationListResponse findPastParticipationList(Long userId);
+	List<PastParticipationListResponse> findPastParticipationList(Long userId);
 	
 	// 11. 오늘 차량 탑승 내역 조회
 	List<PastParticipationListResponse> findTodayParticipationList(Long userId);

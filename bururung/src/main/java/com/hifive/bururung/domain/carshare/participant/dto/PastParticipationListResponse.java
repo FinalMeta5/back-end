@@ -13,4 +13,5 @@ public class PastParticipationListResponse {
 	private String pickupDate;
 	private String pickupLoc;
 	private String destination;
+	private String state;
 }
