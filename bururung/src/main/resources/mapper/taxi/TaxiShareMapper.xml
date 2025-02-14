@@ -3,7 +3,8 @@
 <mapper
 	namespace="com.hifive.bururung.domain.taxi.repository.ITaxiShareRepository">
 	<!-- 전체 택시쉐어 리스트 조회 -->
-	<select id="findAll" resultType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
+	<select id="findAll"
+		resultType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
 		select TAXI_SHARE_ID as "taxiShareId",
 		MEMBER_ID as
 		"memberId",
@@ -20,42 +21,37 @@
 		LATITUDE_DS as "latitudeDS",
 		LONGITUDE_DS as "longitudeDS",
 		OPENCHAT_LINK as "openchatLink",
-		OPENCHAT_CODE as "openchatCode"
-		from TAXI_SHARE
+		OPENCHAT_CODE as "openchatCode",
+		ESTIMATED_AMOUNT as "estimatedAmount",
+		time_nego as "timeNego",
+		from
+		TAXI_SHARE
 	</select>
-
-	<insert id="insertTaxiShare" parameterType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
+<!-- 택시 공유 등록 -->
+	<insert id="insertTaxiShare"
+		parameterType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
 		INSERT INTO TAXI_SHARE (
-			MEMBER_ID, PASSENGERS_NUM, PICKUP_LOCATION,
-			LATITUDE_PL, LONGITUDE_PL, PICKUP_TIME, DESTINATION,
-			LATITUDE_DS, LONGITUDE_DS, OPENCHAT_LINK, OPENCHAT_CODE, ESTIMATED_AMOUNT, TIME_NEGO
+		MEMBER_ID, PASSENGERS_NUM,
+		PICKUP_LOCATION,
+		LATITUDE_PL, LONGITUDE_PL, PICKUP_TIME, DESTINATION,
+		LATITUDE_DS, LONGITUDE_DS, OPENCHAT_LINK, OPENCHAT_CODE,
+		ESTIMATED_AMOUNT,
+		TIME_NEGO
 		) VALUES (
-		#{memberId}, #{passengersNum}, #{pickupLocation},
-		#{latitudePL}, #{longitudePL}, #{pickupTime}, #{destination}, #{latitudeDS}, #{longitudeDS},
-		#{openchatLink}, #{openchatCode}, #{estimatedAmount}, #{timeNego}
+		#{memberId}, #{passengersNum},
+		#{pickupLocation},
+		#{latitudePL}, #{longitudePL}, #{pickupTime},
+		#{destination},
+		#{latitudeDS}, #{longitudeDS},
+		#{openchatLink},
+		#{openchatCode},
+		#{estimatedAmount}, #{timeNego}
 		)
 	</insert>
-	
-	<update id="updateTaxiShare" parameterType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
-	UPDATE TAXI_SHARE
-    SET
-        PASSENGERS_NUM = #{passengersNum},
-        PICKUP_LOCATION = #{pickupLocation},
-        LATITUDE_PL = #{latitudePL},
-        LONGITUDE_PL = #{longitudePL},
-        PICKUP_TIME = #{pickupTime},
-        DESTINATION = #{destination},
-        LATITUDE_DS = #{latitudeDS},
-        LONGITUDE_DS = #{longitudeDS},
-        OPENCHAT_LINK = #{openchatLink},
-        OPENCHAT_CODE = #{openchatCode},
-        ESTIMATED_AMOUNT = #{estimatedAmount},
-        TIME_NEGO = #{timeNego}
-    WHERE TAXI_SHARE_ID = #{taxiShareId}
-	</update>
-	
-	<select id="getTaxiShareByPickupTime" resultType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
-	select TAXI_SHARE_ID as "taxiShareId",
+<!-- 출발날짜로 택시 공유 검색 -->
+	<select id="getTaxiShareByPickupTime"
+		resultType="com.hifive.bururung.domain.taxi.dto.TaxiShareResponse">
+		select TAXI_SHARE_ID as "taxiShareId",
 		MEMBER_ID as
 		"memberId",
 		PASSENGERS_NUM as "passengersNum",
@@ -71,13 +67,32 @@
 		LATITUDE_DS as "latitudeDS",
 		LONGITUDE_DS as "longitudeDS",
 		OPENCHAT_LINK as "openchatLink",
-		OPENCHAT_CODE as "openchatCode"
-		from TAXI_SHARE
-		WHERE TRUNC(PICKUP_TIME) = #{param1}
+		OPENCHAT_CODE as "openchatCode",
+		ESTIMATED_AMOUNT as "estimatedAmount",
+		time_nego as "timeNego",
+		TO_CHAR(PICKUP_TIME, 'HH24:MI') AS "pickupTimeOnly",
+		nvl((select count(member_id)
+		from taxi_share_join tsj
+		where
+		ts.taxi_share_id = tsj.taxi_share_id
+		group by taxi_share_id ),0)
+		as
+		"currentPassengerNum",
+		(select nickname from member m where
+		ts.member_id = m.member_id) as
+		"memberNickname",
+		(select image_url from
+		member m where ts.member_id = m.member_id) as
+		"memberImageUrl"
+		from
+		TAXI_SHARE ts
+		where trunc(PICKUP_TIME) = #{param1}
+		order by status desc
 	</select>
-	
-	<select id="getTaxiShareById" resultType="com.hifive.bururung.domain.taxi.entity.TaxiShare">
-	select TAXI_SHARE_ID as "taxiShareId",
+<!-- 택시공유 아이디로 가져오기(디테일) -->
+	<select id="getTaxiShareById"
+		resultType="com.hifive.bururung.domain.taxi.dto.TaxiShareResponse">
+		select TAXI_SHARE_ID as "taxiShareId",
 		MEMBER_ID as
 		"memberId",
 		PASSENGERS_NUM as "passengersNum",
@@ -93,8 +108,39 @@
 		LATITUDE_DS as "latitudeDS",
 		LONGITUDE_DS as "longitudeDS",
 		OPENCHAT_LINK as "openchatLink",
-		OPENCHAT_CODE as "openchatCode"
-		from TAXI_SHARE
-		WHERE TAXI_SHARE_ID = #{param1}
+		OPENCHAT_CODE as "openchatCode",
+		ESTIMATED_AMOUNT as "estimatedAmount",
+		time_nego as "timeNego",
+		TO_CHAR(PICKUP_TIME, 'HH24:MI') AS "pickupTimeOnly",
+		nvl((select count(member_id)
+		from taxi_share_join tsj
+		where
+		ts.taxi_share_id = tsj.taxi_share_id
+		group by taxi_share_id ),0)
+		as
+		"currentPassengerNum",
+		(select nickname from member m where
+		ts.member_id = m.member_id) as
+		"memberNickname",
+		(select image_url from
+		member m where ts.member_id = m.member_id) as
+		"memberImageUrl"
+		from
+		TAXI_SHARE ts
+		WHERE
+		TAXI_SHARE_ID = #{param1}
+		order by status desc
 	</select>
+
+	<!-- 택시 공유 신청하려고 할때 그 멤버가 개설한 방인지 확인 -->
+	<select id="getCountTaxsiShareByIdAndMemberId" parameterType="com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest">
+		select count(*)
+		from taxi_share
+		where taxi_share_id=#{taxiShareId} and member_id = #{memberId}
+	</select>
+	<!-- 택시공유 삭제 -->
+	<delete id="deleteTaxiShare" parameterType="com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest">
+		delete from taxi_share
+		where taxi_share_id=#{taxiShareId} and member_id = #{memberId}
+	</delete>
 </mapper>

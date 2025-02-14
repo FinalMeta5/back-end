@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hifive.bururung.domain.admin.repository.IAdminMapper">
+    <select id="getMemberList" resultType="AdminMemberDTO">
+    	SELECT
+    		member_id AS "memberId",
+    		birth AS "birth",
+    		email AS "email",
+    		gender AS "gender",
+    		TO_CHAR(join_date, 'YYYY-MM-DD') AS "joinDate",
+    		name AS "name",
+    		phone AS "phone",
+    		role_name AS "roleName",
+    		TO_CHAR(withdrawal_date, 'YYYY-MM-DD') AS "withdrawalDate",
+    		credit_count AS "creditCount",
+    		image_name AS "imageName",
+    		image_url AS "imageUrl",
+    		nickname AS "nickname"
+    	FROM member
+    	WHERE state='ACTIVE' AND role_name NOT IN('OPERATOR')
+    </select>
+    
+    <select id="getRegistrationList" resultType="com.hifive.bururung.domain.admin.dto.AdminCarRegistrationDTO">
+    	SELECT
+    		cr.car_id AS "carId",
+    		cr.member_id AS "memberId",
+    		m.name AS "name",
+    		cr.car_model AS "carModel",
+    		cr.max_passengers AS "maxPassengers",
+    		cr.car_number AS "carNumber",
+    		cr.car_description AS "carDescription",
+    		cr.color AS "color",
+    		TO_CHAR(cr.created_date, 'YYYY-MM-DD HH:mm') AS "createdDate",
+    		cr.image_url AS "imageUrl",
+    		cr.image_name AS "imageName",
+    		cr.verified_file AS "verifiedFile"
+    	FROM car_registration cr
+    	JOIN member m ON cr.member_id=m.member_id
+    	WHERE verified='N'
+    	ORDER BY created_date DESC
+    </select>
+    
+    <select id="getTaxiShareServiceList" resultType="com.hifive.bururung.domain.admin.dto.AdminTaxiShareDTO">
+    	SELECT
+    		taxi_share_id AS "taxiShareId",
+    		join_count AS "joinCount",
+    		member_id AS "memberId",
+    		passengers_num AS "passengersNum",
+    		pickup_location AS "pickupLocation",
+    		TO_CHAR(pickup_time, 'YYYY-MM-DD HH:mm') AS "pickupTime",
+    		destination AS "destination",
+    		TO_CHAR(created_date, 'YYYY-MM-DD HH:mm:ss') AS "createdDate"
+    	FROM taxi_share_view
+    </select>
+    
+    <select id="getCarShareServiceList" resultType="com.hifive.bururung.domain.admin.dto.AdminCarShareDTO">
+    	SELECT
+    		car_share_regi_id AS "carShareRegiId",
+    		join_count AS "joinCount",
+    		car_id AS "carId",
+    		member_id AS "memberId",
+    		passengers_num AS "passengersNum",
+    		pickup_loc AS "pickupLoc",
+    		TO_CHAR(pickup_date, 'YYYY-MM-DD HH:mm') AS "pickupDate",
+    		destination AS "destination",
+    		category AS "category",
+    		TO_CHAR(created_date, 'YYYY-MM-DD HH:mm:ss') AS "createdDate"
+    	FROM car_share_view
+    </select>
+    
+    <select id="getPaymentList" resultType="com.hifive.bururung.domain.admin.dto.AdminPaymentDTO">
+    	SELECT
+    		payment_id AS "paymentId",
+    		created_date AS "createdDate",
+    		approved_date AS "approvedDate",
+    		method AS "method",
+    		order_id AS "orderId",
+    		price AS "price",
+    		credit_id AS "creditId",
+    		member_id AS "memberId"
+    	FROM payment
+    	WHERE state='DONE'
+    </select>
+    
+    <update id="updateRegistrationSetVerifiedToY" parameterType="long">
+    	UPDATE car_registration
+    	SET verified='Y'
+    	WHERE car_id=#{carId}
+    </update>
+    
+    <update id="updateMemberToDriver" parameterType="long">
+    	UPDATE member
+    	SET role_name='DRIVER'
+    	WHERE member_id=#{memberId}
+    </update>
+    
+    <delete id="deleteRegistration" parameterType="long">
+    	DELETE FROM car_registration
+    	WHERE car_id=#{carId}
+    </delete>
+</mapper>

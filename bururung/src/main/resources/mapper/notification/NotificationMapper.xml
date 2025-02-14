@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hifive.bururung.domain.notification.repository.INotificationMapper">
+	<select id="getReadNotifications" parameterType="long" resultType="com.hifive.bururung.domain.notification.entity.Notification">
+		SELECT
+			notification_id AS "notificationId",
+			created_date AS "createdDate",
+			category AS "category",
+			service_ctg AS "serviceCtg",
+			content AS "content",
+			open_status AS "openStatus",
+			checked AS "checked",
+			sender_id AS "senderId",
+			recipient_id AS "receipientId"
+		FROM notification
+		WHERE checked='Y' AND open_status='Y' AND recipient_id=#{receipientId}
+		ORDER BY created_date DESC
+	</select>
+	
+	<select id="getUnreadNotifications" parameterType="long" resultType="com.hifive.bururung.domain.notification.entity.Notification">
+		SELECT
+			notification_id AS "notificationId",
+			created_date AS "createDate",
+			category AS "category",
+			service_ctg AS "serviceCtg",
+			content AS "content",
+			open_status AS "openStatus",
+			checked AS "checked",
+			sender_id AS "senderId",
+			recipient_id AS "receipientId"
+		FROM notification
+		WHERE checked='N' AND open_status='Y' AND recipient_id=#{receipientId}
+		ORDER BY created_date DESC
+	</select>
+	
+	<insert id="insertNotification" parameterType="com.hifive.bururung.domain.notification.entity.Notification">
+		INSERT INTO notification (notification_id, created_date, category, service_ctg, content, sender_id, recipient_id)
+		VALUES (notification_seq.NEXTVAL, #{createdDate}, #{category}, #{serviceCtg}, #{content}, #{senderId}, #{recipientId})
+	</insert>
+	
+	<update id="updateNotificationToRead" parameterType="long">
+		UPDATE notification
+		SET checked='Y'
+		WHERE notification_id=#{notificationId}
+	</update>
+	
+	<update id="updateNotificationToDelete" parameterType="long">
+		UPDATE notification
+		SET open_status='N'
+		WHERE notification_id=#{notificationId}
+	</update>
+</mapper>

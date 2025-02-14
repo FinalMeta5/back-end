@@ -76,4 +76,13 @@ public class Member {
 	public void changePassword(String password) {
 		this.password = password;
 	}
+	
+	public void changeProfile(String imageName, String imageUrl) {
+		this.imageName = imageName;
+		this.imageUrl = imageUrl;
+	}
+	
+	public void changeCredit(int count) {
+		this.creditCount += count;
+	}
 }

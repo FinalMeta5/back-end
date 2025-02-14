@@ -1,6 +1,6 @@
 package com.hifive.bururung.domain.email.service;
 
-import java.io.UnsupportedEncodingException;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Random;
 
@@ -10,8 +10,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import static com.hifive.bururung.domain.email.dto.EmailAuthConstants.*;
 import com.hifive.bururung.domain.email.dto.EmailType;
+import com.hifive.bururung.global.common.RedisUtil;
 import com.hifive.bururung.global.exception.CustomException;
 import com.hifive.bururung.global.exception.errorcode.MemberErrorCode;
 
@@ -25,16 +25,19 @@ import lombok.RequiredArgsConstructor;
 public class EmailService {
 	
 	private final JavaMailSender javaMailSender;
+	private final RedisUtil redisUtil;
 	
     @Value("${spring.mail.username}")
     private String id;
+    
+	private static final String EMAIL_AUTH_PREFIX = "EMAIL_AUTH:";
+	private static final int EMAIL_AUTH_LIMIT = 300;
 	
-    public String createCode(String email, HttpSession session) {
+    public String createCode(String email) {
 		String code = createCode();
 		
-        session.setAttribute(EMAIL_AUTH.getValue(), Map.of(EMAIL.getValue(), email, EMAIL_AUTH_CODE.getValue(), code));
-        session.setMaxInactiveInterval(Integer.parseInt(EMAIL_AUTH_LIMIT_SEC.getValue()));
-        
+		redisUtil.setData(EMAIL_AUTH_PREFIX + email, code, Duration.ofSeconds(EMAIL_AUTH_LIMIT));
+		
 		return code;
     }
     
@@ -60,12 +63,11 @@ public class EmailService {
 		}
 	}
 	
-    public boolean isAuthenticated(HttpSession session, String email, String code) {
-        Map<String, String> map = (Map<String, String>) session.getAttribute(EMAIL_AUTH.getValue());
-        if(!map.isEmpty() && verify(map, email, code)) {
-            session.removeAttribute(EMAIL_AUTH.getValue());
-        	return true;
-        }
+    public boolean isAuthenticated(String email, String code) {
+    	String data = redisUtil.getData(EMAIL_AUTH_PREFIX + email);
+    	if(data.equals(code)) {
+    		return true;
+    	}
         
 		throw new CustomException(MemberErrorCode.EMAIL_AUTH_FAIL);
     }
@@ -111,9 +113,5 @@ public class EmailService {
 			        </div>
 			    """;
 		return html.format(html, code);
-	}
-	
-	private boolean verify(Map<String, String> map, String email, String code) {
-		return map.get(EMAIL.getValue()).equals(email) && map.get(EMAIL_AUTH_CODE.getValue()).equals(code);
 	}
 }

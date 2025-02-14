@@ -1,7 +1,10 @@
 package com.hifive.bururung.domain.carshare.organizer.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hifive.bururung.domain.carshare.organizer.entity.CarRegistration;
 
@@ -22,4 +25,11 @@ public interface ICarRegistrationService {
 	void deleteCar(Long carId); // 차량 삭제
 
 	boolean isCarAlreadyRegistered(Long memberId);
+	
+	boolean isVerified(Long memberId);
+
+	boolean isCarNumberExists(String carNumber);
+	
+	String uploadCarImage(MultipartFile multipartFile, String subpath, Long memberId)throws IOException;
+	String uploadVerifiedFile(MultipartFile multipartFile, String subpath, Long memberId)throws IOException;
 }

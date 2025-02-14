@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class AvailableCarShareListResponse {
+	private Long memberId;
 	private Long carShareRegiId;
 	private String nickname;
 	private Double latitudePl;

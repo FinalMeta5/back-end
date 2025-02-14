@@ -3,25 +3,99 @@
 <mapper
 	namespace="com.hifive.bururung.domain.taxi.repository.ITaxiShareJoinRepository">
 	<select id="getJoinCountByTaxiShareId" resultType="int">
-		select count(member_id) AS CNT
+		select
+		count(member_id) AS CNT
 		from taxi_share_join
-		where taxi_share_id = #{param1}
+		where taxi_share_id =
+		#{param1}
 		group by taxi_share_id
 	</select>
 
-	<insert id="insertTaxiShareJoin">
+	<insert id="insertTaxiShareJoin"
+		parameterType="com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest">
 		INSERT INTO TAXI_SHARE_JOIN (
 		TAXI_SHARE_ID, MEMBER_ID
-		) VALUES (#{param1}, #{param2});
+		)
+		VALUES (#{taxiShareId}, #{memberId})
 	</insert>
 
 	<delete id="deleteTaxiShareJoinById">
-		DELETE FROM TAXI_SHARE_JOIN WHERE TSJ_ID = #{param1};
+		DELETE FROM TAXI_SHARE_JOIN WHERE TSJ_ID = #{param1}
 	</delete>
 
-	<select id="getDuplCntByTaxiShareIdAndMemberId" resultType="int">
+	<delete id="deleteTaxiShareJoinByTaxiShareId">
+		DELETE FROM TAXI_SHARE_JOIN WHERE TAXI_SHARE_ID =
+		#{param1}
+	</delete>
+
+	<select id="getDuplCntByTaxiShareIdAndMemberId" resultType="int"
+		parameterType="com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest">
 		select count(*)
 		from taxi_share_join
-		where taxi_share_id = #{param1} and member_id = #{param2}
+		where taxi_share_id =
+		#{taxiShareId} and member_id = #{memberId}
+	</select>
+
+	<select id="getMemberIdByTaxiShareId">
+		select member_id as "memberId", taxi_share_id as
+		"taxi_share_id"
+		from taxi_share_join
+		where taxi_share_id = #{param1}
+	</select>
+	<!-- 7. 잔여 크레딧 조회 -->
+	<select id="findLeftoverCredit" parameterType="Long"
+		resultType="int">
+		SELECT
+		nvl(SUM(CASE
+		WHEN state IN ('CHARGE', 'PAY') THEN
+		count
+		WHEN state IN ('CAR', 'TAXI') THEN -count
+		ELSE 0
+		END),0) AS
+		total_credit
+		FROM member_credit
+		WHERE member_id = #{param1}
+	</select>
+	<!-- 8. 크레딧 차감 -->
+	<insert id="insertCreditByTaxi">
+		INSERT INTO member_credit(MEMBER_CREDIT_ID, count,
+		state, transaction_date,
+		member_id)
+		VALUES (member_credit_seq.NEXTVAL,
+		#{param1}, 'TAXI', LOCALTIMESTAMP, #{param2})
+	</insert>
+
+	<!-- (차량공유)오늘 날짜 참여한거 있나 조회하기 -->
+	<select id="getCarShareCountByMemberIdAndSysdate"
+		resultType="hashmap">
+		select aa.member_id, count(aa.car_share_join_id) as cnt
+		from (select csj.*, (select csr.pickup_date from
+		car_share_registration csr where csr.car_share_regi_id =
+		csj.car_share_regi_id) as pickup_date
+		from car_share_join csj) aa
+		where
+		1=1
+		and aa.state='탄다' and trunc(aa.pickup_date) = trunc(sysdate)
+		group
+		by aa.member_id
+	</select>
+
+	<!-- 오늘 탈 택시 있나 조회 -->
+	<select id="getTaxiShareByMemberIdOnToday" resultType="com.hifive.bururung.domain.taxi.dto.TaxiShareJoinResponse">
+		select tsj.tsj_id as "tsjId", tsj.taxi_share_id as
+		"taxiShareId",
+		tsj.member_id as "memberId", tsj.join_time as "joinTime",
+		ts.pickup_location as "pickupLocation", trunc(ts.pickup_time)as "pickupDate",
+		TO_CHAR(ts.PICKUP_TIME, 'HH24:MI') as "pickupTime",
+		(select count(tsj_id)
+		from taxi_share_join a
+		where a.taxi_share_id = tsj.taxi_share_id
+		group by taxi_share_id) as "count"
+		from taxi_share_join tsj
+		left join taxi_share ts
+		on tsj.taxi_share_id = ts.taxi_share_id
+		where 1=1
+		and trunc(ts.pickup_time) = trunc(sysdate)
+		and tsj.member_id = #{param1}
 	</select>
 </mapper>

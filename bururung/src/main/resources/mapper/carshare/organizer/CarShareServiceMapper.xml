@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "C:\dev\workspace\bururung\back-end\bururung\src\main\resources\mybatis-3-mapper.dtd">
+<mapper namespace="com.hifive.bururung.domain.carshare.organizer.repository.CarShareMapper">
+
+	<select id="findMyCarServiceParticipantList" resultType="com.hifive.bururung.domain.carshare.organizer.dto.MyCarServiceParticipantListResponseDTO">
+	    SELECT 
+	        csj.CAR_SHARE_JOIN_ID AS "carShareJoinId",
+	        csj.MEMBER_ID AS "memberId",
+	        csj.STATE AS "state",
+	        csj.JOIN_DATE AS "joinDate",
+	        NVL(rv.RATE, 0) AS "rate", 
+	        rv.CREATE_DATE AS "createDate",
+	        NVL(rv."COMMENT", 'No Comment') AS "comment",
+	        NVL(mem.NICKNAME, 'Unknown') AS "nickName",
+	        NVL(mem.IMAGE_URL, CAST('https://ifh.cc/g/qsAZyn.png' AS VARCHAR2(255))) AS "imageUrl"
+	    FROM CAR_SHARE_JOIN csj
+	    LEFT JOIN REVIEW rv ON csj.CAR_SHARE_JOIN_ID = rv.CAR_SHARE_JOIN_ID
+	    LEFT JOIN MEMBER mem ON csj.MEMBER_ID = mem.MEMBER_ID
+	    WHERE csj.CAR_SHARE_REGI_ID = #{carShareRegiId}
+	    ORDER BY NVL(rv.CREATE_DATE, SYSDATE)
+	</select>
+	
+	<select id="countByCarId" resultType="int">
+		SELECT COUNT(*) FROM CAR_SHARE_REGISTRATION WHERE CAR_ID = #{carId}
+	</select>
+
+    <update id="updateCarIdToZero">
+        UPDATE CAR_SHARE_REGISTRATION SET CAR_ID = 0 WHERE CAR_ID = #{carId}
+    </update>
+
+
+</mapper>

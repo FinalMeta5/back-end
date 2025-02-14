@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper SYSTEM "file:///C:/dev/workspace/finalmeta/backend/hiapp/src/main/resources/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hifive.bururung.domain.carshare.participant.repository.ServiceRegistrationRepository">
+	
+	<!-- 7. 잔여 크레딧 조회 -->
+	<select id="findLeftoverCredit" parameterType="Long" resultType="int">
+		SELECT 
+    		SUM(CASE 
+            	WHEN state IN ('CHARGE', 'PAY') THEN count  
+            	WHEN state IN ('CAR', 'TAXI') THEN -count
+            	ELSE 0 
+        	END) AS total_credit
+		FROM member_credit
+		WHERE member_id = #{userId}
+	</select>
+	
+	<!-- 8. 크레딧 차감 -->
+	<insert id="insertCreditByCar" parameterType="Long">
+		INSERT INTO member_credit(MEMBER_CREDIT_ID, count, state, transaction_date, member_id)
+		VALUES (member_credit_seq.NEXTVAL, 7, 'CAR', LOCALTIMESTAMP, #{userId})
+	</insert>
+	
+</mapper>

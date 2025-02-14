@@ -12,4 +12,5 @@ public class CarInformationResponse {
 	private String carNumber;
 	private String color;
 	private String carDescription;
+	private String imageUrl;
 }
