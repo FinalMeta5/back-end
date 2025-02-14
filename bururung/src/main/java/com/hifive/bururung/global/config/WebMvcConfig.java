@@ -1,5 +1,7 @@
 package com.hifive.bururung.global.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.support.ErrorPageFilter;
 //import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,10 +24,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //        return registrationBean;
 //    }
 
-    @Bean
-    Filter shallowEtagHeaderFilter() {
-    	return new ShallowEtagHeaderFilter();
-    }
+	@Bean
+	public ErrorPageFilter errorPageFilter() {
+	    return new ErrorPageFilter();
+	}
+
+	@Bean
+	public FilterRegistrationBean<ErrorPageFilter> disableSpringBootErrorFilter(ErrorPageFilter filter) {
+	    FilterRegistrationBean<ErrorPageFilter> filterRegistrationBean = new FilterRegistrationBean<>(filter);
+	    filterRegistrationBean.setEnabled(false);
+	    return filterRegistrationBean;
+	}
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

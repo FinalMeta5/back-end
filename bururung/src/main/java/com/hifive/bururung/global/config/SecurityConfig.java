@@ -24,85 +24,69 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-   
-   private final TokenProvider tokenProvider;
-   private final AuthenticationEntryPoint entryPoint;
-   
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-<<<<<<< HEAD
-//                                .requestMatchers("/api/member/login").permitAll()
-//                                .requestMatchers("/api/member/signup").permitAll()
-//                                .requestMatchers("/api/email/**").permitAll()
-//                                .requestMatchers("/api/member/find-email").permitAll()
-//                                .requestMatchers("/api/member/change-password").permitAll()
-//                                .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
-//                                .requestMatchers("/error").permitAll()
-//                                .requestMatchers("/api/carshare/registration/available-list").permitAll()
-//
-//                                .anyRequest().authenticated()
-                		.requestMatchers("/**").permitAll()
-=======
-                                .requestMatchers("/api/member/login").permitAll()
-                                .requestMatchers("/api/member/signup").permitAll()
-                                .requestMatchers("/api/member/logout").permitAll()
-                                .requestMatchers("/api/email/**").permitAll()
-                                .requestMatchers("/api/member/find-email").permitAll()
-                                .requestMatchers("/api/member/check-nickname").permitAll()
-                                .requestMatchers("/api/member/change-password").permitAll()
-                                .requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
-                                .requestMatchers("/error").permitAll()
-                                .requestMatchers("/api/car-share/**").hasRole("DRIVER")
-                                .requestMatchers("/api/carshare/registration/available-list").permitAll()
-                                .requestMatchers("/api/taxi/**").permitAll()
-                                .requestMatchers("/api/carshare/registration").permitAll()
-                                .requestMatchers("/api/car-share/register").hasRole("DRIVER")
-                                .requestMatchers("/api/car-shar/my-list").permitAll()
-                                .requestMatchers("/api/scheduling/**").permitAll()
-                                .requestMatchers("/api/admin/**").hasRole("OPERATOR")
-                                .requestMatchers("/api/statistics/**").hasRole("OPERATOR")
-                                .requestMatchers("/api/notifications/**").authenticated()
 
-                                .anyRequest().authenticated()
+	private final TokenProvider tokenProvider;
+	private final AuthenticationEntryPoint entryPoint;
+
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.authorizeHttpRequests(auth -> auth
+			    .requestMatchers(
+			            "/swagger-ui/**",
+			            "/v3/api-docs/**",
+			            "/swagger-ui.html"
+			        ).permitAll()
+				.requestMatchers("/api/member/login").permitAll().requestMatchers("/api/member/signup").permitAll()
+				.requestMatchers("/api/member/logout").permitAll().requestMatchers("/api/email/**").permitAll()
+				.requestMatchers("/api/member/find-email").permitAll().requestMatchers("/api/member/check-nickname")
+				.permitAll().requestMatchers("/api/member/change-password").permitAll()
+				.requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
+				.requestMatchers("/error").permitAll().requestMatchers("/api/car-share/**").hasRole("DRIVER")
+				.requestMatchers("/api/carshare/registration/available-list").permitAll()
+				.requestMatchers("/api/taxi/**").permitAll().requestMatchers("/api/carshare/registration").permitAll()
+				.requestMatchers("/api/car-share/register").hasRole("DRIVER").requestMatchers("/api/car-shar/my-list")
+				.permitAll().requestMatchers("/api/scheduling/**").permitAll().requestMatchers("/api/admin/**")
+				.hasRole("OPERATOR").requestMatchers("/api/statistics/**").hasRole("OPERATOR")
+				.requestMatchers("/api/notifications/**").authenticated()
+				.requestMatchers("/api/car-share/participants/**").permitAll()
+
+				.anyRequest().authenticated()
 //                      .requestMatchers("/**").permitAll()
->>>>>>> f8fe8e45b820cd0b022741f204bfa82b66332d32
-                )
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .cors(Customizer.withDefaults())
-                .formLogin(formLogin -> formLogin.disable())
-                .cors(Customizer.withDefaults())
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(handler -> handler.authenticationEntryPoint(entryPoint));
-        
-        return http.build();
-    }
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-       return new BCryptPasswordEncoder();
-    }
-    
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-       return new JwtAuthenticationFilter(tokenProvider);
-    }
-    
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("https://bururung-2911d.web.app", "https://hifive55.shop", "https://www.hifive5.shop", "http://localhost:3000", "https://localhost:3000"));
+		).csrf(csrf -> csrf.disable()) // CSRF 비활성화
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.cors(Customizer.withDefaults()).formLogin(formLogin -> formLogin.disable())
+				.cors(Customizer.withDefaults())
+				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+				.exceptionHandling(handler -> handler.authenticationEntryPoint(entryPoint));
 
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.addExposedHeader("accesstoken");
-        configuration.setAllowCredentials(true);
+		return http.build();
+	}
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public JwtAuthenticationFilter jwtAuthenticationFilter() {
+		return new JwtAuthenticationFilter(tokenProvider);
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+
+		configuration.setAllowedOrigins(Arrays.asList("https://bururung-2911d.web.app", "https://hifive55.shop",
+				"https://www.hifive5.shop", "http://localhost:3000", "https://localhost:3000"));
+
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedHeaders(Arrays.asList("*"));
+		configuration.addExposedHeader("accesstoken");
+		configuration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
 }
