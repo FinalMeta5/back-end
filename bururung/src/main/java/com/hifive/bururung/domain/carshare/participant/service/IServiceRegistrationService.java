@@ -20,7 +20,7 @@ public interface IServiceRegistrationService {
 	int findLeftoverCredit(Long userId);
 	void insertCreditByCar(Long userId);
 	List<AllCarListResponse> findAllShareCarList();
-	PastParticipationListResponse findPastParticipationList(Long userId);
+	List<PastParticipationListResponse> findPastParticipationList(Long userId);
 	List<PastParticipationListResponse> findTodayParticipationList(Long userId);
 	int updateStateOK(Long carShareJoinId);
 	int updateStateNO(Long carShareJoinId);
