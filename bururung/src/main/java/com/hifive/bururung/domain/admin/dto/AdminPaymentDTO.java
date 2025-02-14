@@ -1,5 +1,7 @@
 package com.hifive.bururung.domain.admin.dto;
 
+import java.sql.Timestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AdminPaymentDTO {
 	private Long paymentId;
-	private String createdDate;
-	private String approvedDate;
+	private Timestamp createdDate;
+	private Timestamp approvedDate;
 	private String method;
 	private String orderId;
 	private Long price;

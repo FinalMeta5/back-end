@@ -2,9 +2,8 @@ package com.hifive.bururung.domain.carshare.organizer.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-@Getter @Setter @ToString
+@Getter @Setter
 public class CarShareRegiRequestDTO {
     private String pickupLoc;
     private double latitudePl;
@@ -24,7 +23,6 @@ public class CarShareRegiRequestDTO {
     private String pickupDate;
     private String category;
     
-    @Override
     public String toString() {
         return "CarShareRegiRequestDTO{" +
                 "pickupLoc='" + pickupLoc + '\'' +
