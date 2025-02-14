@@ -42,7 +42,7 @@ public class TaxiShareController {
 	
 	@PostMapping("/insert")
 	public ResponseEntity<Void> insertTaxiShare(@RequestBody TaxiShare taxiShare) {
-		System.out.println(taxiShare.toString());
+//		System.out.println(taxiShare.toString());
 		taxiShareService.insertTaxiShare(taxiShare);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
@@ -95,10 +95,10 @@ public class TaxiShareController {
 	public ResponseEntity<Void> deleteTaxiShare(@RequestBody TaxiShareJoinRequest taxiShareJoinRequest) {
 		//삭제되는 해당 택시공유 정보
 		TaxiShareResponse taxiShareResponse = taxiShareService.getTaxiShareById(taxiShareJoinRequest.getTaxiShareId());
-		System.out.println("택시 공유 삭제하려는 사람 : "+taxiShareJoinRequest.getMemberId()+", 실제 삭제하는 게시글 쓴사람"+taxiShareResponse.getMemberId());
+//		System.out.println("택시 공유 삭제하려는 사람 : "+taxiShareJoinRequest.getMemberId()+", 실제 삭제하는 게시글 쓴사람"+taxiShareResponse.getMemberId());
 		//알람 보낼 멤버리스트(삭제하는 택시공유에 신청한 멤버들)
 		List<Long> memberList = taxiShareJoinService.getMemberIdByTaxiShareId(taxiShareJoinRequest.getTaxiShareId());
-		System.out.println("전송해야되는 멤버리스트: "+memberList.toString());
+//		System.out.println("전송해야되는 멤버리스트: "+memberList.toString());
 		for(Long memberId : memberList) {
 			Member participantInfo = memberService.findByMemberId(memberId);
 			Notification notification = TaxiShareJoinAction.getTaxiShareDeleteNotiInfo(taxiShareResponse, taxiShareJoinRequest, participantInfo);

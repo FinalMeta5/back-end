@@ -52,4 +52,9 @@ public class AdminService implements IAdminService {
 		adminMapper.updateMemberToDriver(registration.getMemberId());
 	}
 
+	@Override
+	public void deleteRegistration(Long carId) {
+		adminMapper.deleteRegistration(carId);
+	}
+
 }

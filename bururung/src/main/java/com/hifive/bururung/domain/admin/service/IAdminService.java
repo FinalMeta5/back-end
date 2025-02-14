@@ -23,4 +23,6 @@ public interface IAdminService {
 
 	void approveRegistration(AdminCarRegistrationRequest registration);
 
+	void deleteRegistration(Long carId);
+
 }

@@ -3,6 +3,7 @@ plugins {
 	id 'war'
 	id 'org.springframework.boot' version '3.4.2'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
 }
 
 group = 'com.hifive'
@@ -26,6 +27,30 @@ configurations {
 
 repositories {
 	mavenCentral()
+}
+
+jacoco {
+    toolVersion = "0.8.10" // 사용 가능한 최신 버전 확인
+}
+
+test {
+    finalizedBy jacocoTestReport // 테스트 후 리포트 자동 생성
+}
+
+jacocoTestReport {
+    reports {
+        html.required = true
+        xml.required = true
+        csv.required = true
+    }
+    // 특정 패키지나 클래스 제외 설정 예시
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect { fileTree(dir: it, exclude: [
+            '**/global/**',
+            '**/dto/**',
+            '**/entity/**'
+        ]) }))
+    }
 }
 
 dependencies {
@@ -58,6 +83,15 @@ dependencies {
     	implementation('org.springframework.boot:spring-boot-starter-websocket') {
     		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     	}
+    	implementation('org.springframework.boot:spring-boot-starter-aop') {
+    		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    	}
+    	implementation('org.springframework.boot:spring-boot-starter-logging') {
+    		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    	}
+		implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
+    	
+    	
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 	compileOnly 'org.projectlombok:lombok'
@@ -72,7 +106,10 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+	compileOnly 'net.minidev:json-smart:2.0'
+	implementation 'org.apache.poi:poi-ooxml:5.2.3'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
