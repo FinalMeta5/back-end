@@ -25,4 +25,5 @@ public interface IServiceRegistrationService {
 	int updateStateOK(Long carShareJoinId);
 	int updateStateNO(Long carShareJoinId);
 	List<AllCarListResponse> findByCategoryShareCarList(String category);
+
 }

@@ -16,7 +16,8 @@
                                 SELECT COUNT(*)
                                 FROM CAR_SHARE_JOIN csj2
                                 WHERE csj2.CAR_SHARE_REGI_ID = csr.CAR_SHARE_REGI_ID
-		)
+			)
+			AND csr.car_id != 0
 	</select>
 	
 	<!-- 2. 운전자 정보 -->
@@ -132,7 +133,7 @@
 	
 	<!-- 14. 카테고리별 공유 차량 목록 조회 -->
 	<select id="findByCategoryShareCarList" resultType="com.hifive.bururung.domain.carshare.participant.dto.AllCarListResponse">
-		SELECT car_share_regi_id, car_id, member_id, latitude_pl, longitude_pl, passengers_num, latitude_ds, longitude_ds, pickup_date, category
+		SELECT car_share_regi_id, car_id, member_id, latitude_pl, longitude_pl, passengers_num, latitude_ds, longitude_ds, pickup_date, category, pickup_loc, destination
 		FROM car_share_registration csr
 		WHERE pickup_date > LOCALTIMESTAMP
     		AND csr.passengers_num > (
