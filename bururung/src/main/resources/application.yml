@@ -50,6 +50,9 @@ mybatis:
     map-underscore-to-camel-case: true
 
 server:
+  error:
+    whitelabel:
+      enabled: false
   servlet:
     encoding:
       charset: UTF-8
