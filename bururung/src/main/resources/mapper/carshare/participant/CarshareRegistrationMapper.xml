@@ -156,4 +156,11 @@ WHERE csj.member_id = #{userId}
             	)
             AND category = #{category}
 	</select>
+	
+	<!-- 15. 차량 예약 인원 조회 -->
+	<select id="findJoinCountByCarShareRegiId" resultType="int">
+		select NVL(COUNT(member_id), 0) AS CNT
+		from car_share_join
+		where car_share_regi_id = #{param1}
+	</select>
 </mapper>

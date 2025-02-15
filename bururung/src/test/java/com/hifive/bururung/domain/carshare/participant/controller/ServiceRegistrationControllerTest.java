@@ -455,7 +455,7 @@ public class ServiceRegistrationControllerTest {
     void testFindPastParticipationList_Success() {
         Long userId = 1L;
         PastParticipationListResponse pastResponse = pastParticipationListResponse;
-        when(registrationService.findPastParticipationList(userId)).thenReturn(pastResponse);
+        when(registrationService.findPastParticipationList(userId)).thenReturn((List<PastParticipationListResponse>) pastResponse);
 
         ResponseEntity<Object> response = controller.findPastParticipationList(userId);
         assertEquals(HttpStatus.OK, response.getStatusCode());

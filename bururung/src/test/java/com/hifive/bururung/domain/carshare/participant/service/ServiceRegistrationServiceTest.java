@@ -192,9 +192,9 @@ public class ServiceRegistrationServiceTest {
     void testFindPastParticipationList() {
         Long userId = 1L;
         PastParticipationListResponse pastResponse = pastParticipationListResponse;
-        when(repository.findPastParticipationList(userId)).thenReturn(pastResponse);
+        when(repository.findPastParticipationList(userId)).thenReturn((List<PastParticipationListResponse>) pastResponse);
 
-        PastParticipationListResponse result = service.findPastParticipationList(userId);
+        PastParticipationListResponse result = (PastParticipationListResponse) service.findPastParticipationList(userId);
         assertEquals(pastResponse, result);
         verify(repository).findPastParticipationList(userId);
     }

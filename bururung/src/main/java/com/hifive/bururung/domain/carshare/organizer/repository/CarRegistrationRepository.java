@@ -5,10 +5,14 @@ import java.util.Optional;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.hifive.bururung.domain.carshare.organizer.entity.CarRegistration;
+import com.hifive.bururung.domain.taxi.entity.TaxiShareEntity;
+
+import jakarta.persistence.LockModeType;
 
 public interface CarRegistrationRepository extends JpaRepository<CarRegistration, Long>{
 	Optional<CarRegistration> findByMember_MemberId(Long memberId);
@@ -22,4 +26,7 @@ public interface CarRegistrationRepository extends JpaRepository<CarRegistration
 	@Query("SELECT c.carId FROM CarRegistration c WHERE c.member.memberId = :memberId")
 	Long findCarIdByMemberId(@Param("memberId") Long memberId);
 
+	@Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
+	@Query("select c from CarRegistration c where c.carId = :id")
+	Optional<CarRegistration> findByIdWithLock(@Param("id") Long id);
 }

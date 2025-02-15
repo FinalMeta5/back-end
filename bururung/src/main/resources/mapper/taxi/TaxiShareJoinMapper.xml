@@ -3,12 +3,10 @@
 <mapper
 	namespace="com.hifive.bururung.domain.taxi.repository.ITaxiShareJoinRepository">
 	<select id="getJoinCountByTaxiShareId" resultType="int">
-		select
-		count(member_id) AS CNT
+		select NVL(COUNT(member_id), 0) AS CNT
 		from taxi_share_join
 		where taxi_share_id =
 		#{param1}
-		group by taxi_share_id
 	</select>
 
 	<insert id="insertTaxiShareJoin"
