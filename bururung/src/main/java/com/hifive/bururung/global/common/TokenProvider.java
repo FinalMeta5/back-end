@@ -8,6 +8,8 @@ import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -77,17 +79,16 @@ public class TokenProvider implements InitializingBean{
                 .compact();
 	}
 	
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-            return true;
-            
-        }catch(ExpiredJwtException e){
-        	throw new CustomException(MemberErrorCode.EXPIRED_TOKEN);
-        }catch(Exception e){
-        	throw new CustomException(MemberErrorCode.MALFORMED_TOKEN);
-        }
-    }
+	public boolean validateToken(String token) {
+	    try {
+	        Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+	        return true;
+	    } catch (ExpiredJwtException e) {
+	        throw new CredentialsExpiredException("토큰 만료", e);
+	    } catch(Exception e) {
+	        throw new BadCredentialsException("올바르지 않은 토큰", e);
+	    }
+	}
 	
     public Authentication getAuthentication(String token) {
         Claims claims = getClaim(token);
