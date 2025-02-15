@@ -85,12 +85,25 @@
 	
 	<!-- 10. 과거 차량 탑승 내역 조회 -->
 	<select id="findPastParticipationList" parameterType="Long" resultType="com.hifive.bururung.domain.carshare.participant.dto.PastParticipationListResponse">
-		SELECT csr.car_share_regi_id, csr.member_id, TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') as pickup_date, csr.pickup_loc, csr.destination
-		FROM car_share_registration csr
-			JOIN car_share_join csj
-    			ON csr.car_share_regi_id = csj.car_share_regi_id
-		WHERE csj.member_id = #{userId}
-    		AND csr.pickup_date <![CDATA[ < ]]> LOCALTIMESTAMP
+
+    		
+    	SELECT 
+    csr.car_share_regi_id, 
+    csr.member_id, 
+    TO_CHAR(csr.pickup_date, 'YYYY-MM-DD HH24:MI:SS') AS pickup_date, 
+    csr.pickup_loc, 
+    csr.destination,
+    CASE 
+        WHEN r.car_share_join_id IS NOT NULL THEN '완료' 
+        ELSE '미완료' 
+    END AS review_status
+FROM car_share_registration csr
+JOIN car_share_join csj 
+    ON csr.car_share_regi_id = csj.car_share_regi_id
+LEFT JOIN review r 
+    ON csj.car_share_join_id = r.car_share_join_id  
+WHERE csj.member_id = #{userId}
+    AND csr.pickup_date <![CDATA[ < ]]> LOCALTIMESTAMP
 	</select>
 	
 	<!-- 11. 오늘 차량 탑승 내역 조회 -->
@@ -142,5 +155,12 @@
                                 WHERE csj2.CAR_SHARE_REGI_ID = csr.CAR_SHARE_REGI_ID
             	)
             AND category = #{category}
+	</select>
+	
+	<!-- 15. 차량 예약 인원 조회 -->
+	<select id="findJoinCountByCarShareRegiId" resultType="int">
+		select NVL(COUNT(member_id), 0) AS CNT
+		from car_share_join
+		where car_share_regi_id = #{param1}
 	</select>
 </mapper>

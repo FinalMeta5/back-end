@@ -2,6 +2,12 @@ package com.hifive.bururung.domain.member.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +24,12 @@ import com.hifive.bururung.domain.member.dto.TokenDTO;
 import com.hifive.bururung.domain.member.repository.MemberRepository;
 import com.hifive.bururung.domain.member.service.IMemberService;
 import com.hifive.bururung.global.common.CookieUtil;
+import com.hifive.bururung.global.common.TokenProvider;
+import com.hifive.bururung.global.exception.CustomException;
+import com.hifive.bururung.global.exception.errorcode.MemberErrorCode;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +41,7 @@ public class MemberController {
 	private final IMemberService memberService;
 	private final MemberRepository memberRepository;
 	private final CookieUtil cookieUtil;
+	private final TokenProvider tokenProvider;
 	
 	@Value("${jwt.refresh-token-validity}")
 	private Long refreshTokenValidity;
@@ -50,6 +62,39 @@ public class MemberController {
 		
 		return ResponseEntity.ok(memberId);
 	}
+	
+	@PostMapping("/logout")
+	public ResponseEntity<String> logout(@AuthenticationPrincipal User user) {
+		Long memberId = Long.parseLong(user.getUsername());
+		
+		memberService.logout(memberId);
+		
+		return ResponseEntity.ok("로그아웃 성공");
+	}
+	
+	@PostMapping("/reissue")
+	public ResponseEntity<String> reissue(HttpServletRequest request, HttpServletResponse response) {
+		String refreshToken = getRefreshToken(request);
+		if(refreshToken == null) {
+			throw new CustomException(MemberErrorCode.NO_TOKEN);
+		}
+		
+		Authentication authentication = tokenProvider.getAuthentication(refreshToken);
+		String accessToken = memberService.reissue(authentication, refreshToken);
+		
+		setAccessToken(response, accessToken);
+		
+		return ResponseEntity.ok("재발급 성공");
+	}
+	
+	@DeleteMapping
+	public ResponseEntity<String> delete(@AuthenticationPrincipal User user, String password) {
+		Long memberId = Long.parseLong(user.getUsername());
+		memberService.delete(memberId, password);
+		
+		return ResponseEntity.ok("탈퇴 성공");
+	}
+	
 	
 	@PostMapping("/find-email")
 	public ResponseEntity<String> findId(@RequestBody FindEmailRequest findEmailRequest) {
@@ -72,5 +117,11 @@ public class MemberController {
 	
 	private void setRefreshToken(HttpServletResponse response, String refreshToken) {
 		cookieUtil.addCookie(response, "refreshtoken", refreshToken, refreshTokenValidity.intValue());
+	}
+	
+	private String getRefreshToken(HttpServletRequest request) {
+	    return cookieUtil.getCookie(request, "refreshtoken")
+                .map(Cookie::getValue)
+                .orElse(null);
 	}
 }

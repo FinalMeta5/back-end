@@ -85,4 +85,8 @@ public class Member {
 	public void changeCredit(int count) {
 		this.creditCount += count;
 	}
+	
+	public void changeState(MemberState state) {
+		this.state = state;
+	}
 }

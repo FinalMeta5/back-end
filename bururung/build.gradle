@@ -108,6 +108,8 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 	compileOnly 'net.minidev:json-smart:2.0'
 	implementation 'org.apache.poi:poi-ooxml:5.2.3'
+	implementation 'org.springframework.retry:spring-retry'
+	
 }
 
 

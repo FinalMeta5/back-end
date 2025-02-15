@@ -37,7 +37,7 @@ public class SecurityConfig {
 			            "/swagger-ui.html"
 			        ).permitAll()
 				.requestMatchers("/api/member/login").permitAll().requestMatchers("/api/member/signup").permitAll()
-				.requestMatchers("/api/member/logout").permitAll().requestMatchers("/api/email/**").permitAll()
+				.requestMatchers("/api/member/logout").permitAll().requestMatchers("/api/email/**").permitAll().requestMatchers("/api/member/reissue").permitAll()
 				.requestMatchers("/api/member/find-email").permitAll().requestMatchers("/api/member/check-nickname")
 				.permitAll().requestMatchers("/api/member/change-password").permitAll()
 				.requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
@@ -49,6 +49,8 @@ public class SecurityConfig {
 				.hasRole("OPERATOR").requestMatchers("/api/statistics/**").hasRole("OPERATOR")
 				.requestMatchers("/api/notifications/**").authenticated()
 				.requestMatchers("/api/car-share/participants/**").permitAll()
+				.requestMatchers("/api/carshare/registration/**").permitAll()
+				.requestMatchers("/wss/**").permitAll()
 
 				.anyRequest().authenticated()
 //                      .requestMatchers("/**").permitAll()

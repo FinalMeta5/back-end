@@ -44,7 +44,7 @@ public interface ServiceRegistrationRepository {
 	List<AllCarListResponse> findAllShareCarList();
 	
 	// 10. 과거 차량 탑승 내역 조회
-	PastParticipationListResponse findPastParticipationList(Long userId);
+	List<PastParticipationListResponse> findPastParticipationList(Long userId);
 	
 	// 11. 오늘 차량 탑승 내역 조회
 	List<PastParticipationListResponse> findTodayParticipationList(Long userId);
@@ -57,4 +57,7 @@ public interface ServiceRegistrationRepository {
 	
 	// 14. 카테고리 별 공유차량 목록 조회
 	List<AllCarListResponse> findByCategoryShareCarList(String category);
+	
+	// 15. 차량 예약 인원 조회
+	int findJoinCountByCarShareRegiId(Long carShareRegiId);
 }

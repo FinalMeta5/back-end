@@ -6,9 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hifive.bururung.domain.carshare.organizer.entity.CarRegistration;
+import com.hifive.bururung.domain.carshare.organizer.repository.CarRegistrationRepository;
 import com.hifive.bururung.domain.carshare.participant.dto.AllCarListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.AvailableCarShareListResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.CarInformationResponse;
@@ -16,6 +21,8 @@ import com.hifive.bururung.domain.carshare.participant.dto.DriverInformationResp
 import com.hifive.bururung.domain.carshare.participant.dto.DrivingInformationResponse;
 import com.hifive.bururung.domain.carshare.participant.dto.PastParticipationListResponse;
 import com.hifive.bururung.domain.carshare.participant.repository.ServiceRegistrationRepository;
+import com.hifive.bururung.global.exception.CustomException;
+import com.hifive.bururung.global.exception.errorcode.CarRegistrationErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class ServiceRegistrationService implements IServiceRegistrationService{
 	
 	private final ServiceRegistrationRepository serviceRegistrationRepository;
+	private final CarRegistrationRepository carRegistrationRepository;
 	
 	// 1. 현재 이용 가능한 공유 차량 목록
 	@Override
@@ -54,21 +62,35 @@ public class ServiceRegistrationService implements IServiceRegistrationService{
 	}
 
 	// 5. 공유 차량 예약
-	@Override
-	public boolean insertRegistration(Long carShareRegiId, Long userId) {
-		long leftoverCredit = serviceRegistrationRepository.findLeftoverCredit(userId);
-		
-		if(leftoverCredit >= 7) {
-			Map<String, Object> params = new HashMap<>();
-            params.put("carShareRegiId", carShareRegiId);
-            params.put("userId", userId);
-            
-            serviceRegistrationRepository.insertRegistration(params);
-            return true;
-		} else {
-			return false;
+		@Retryable(
+				retryFor = {ObjectOptimisticLockingFailureException.class },
+				maxAttempts = 3,
+				backoff = @Backoff(delay = 100)
+		)
+		@Override
+		@Transactional
+		public boolean insertRegistration(Long carShareRegiId, Long userId) {
+			CarRegistration carRegistration = carRegistrationRepository.findByIdWithLock(carShareRegiId)
+			.orElseThrow(() -> new CustomException(CarRegistrationErrorCode.CAR_NOT_FOUND));
+			
+			long leftoverCredit = serviceRegistrationRepository.findLeftoverCredit(userId);
+			int joinCount = serviceRegistrationRepository.findJoinCountByCarShareRegiId(carShareRegiId);
+			
+			if(joinCount >= carRegistration.getMaxPassengers()) {
+				throw new CustomException(CarRegistrationErrorCode.FULL_CAPACITY);
+			}
+			
+			if(leftoverCredit >= 7) {
+				Map<String, Object> params = new HashMap<>();
+	            params.put("carShareRegiId", carShareRegiId);
+	            params.put("userId", userId);
+	            
+	            serviceRegistrationRepository.insertRegistration(params);
+	            return true;
+			} else {
+				return false;
+			}
 		}
-	}
 	
 	// 6. 리뷰 평점 조회
 	@Override
@@ -96,7 +118,7 @@ public class ServiceRegistrationService implements IServiceRegistrationService{
 	
 	// 10. 과거 차량 탑승 내역 조회
 	@Override
-	public PastParticipationListResponse findPastParticipationList(Long userId) {
+	public List<PastParticipationListResponse> findPastParticipationList(Long userId) {
 		return serviceRegistrationRepository.findPastParticipationList(userId);
 	}
 

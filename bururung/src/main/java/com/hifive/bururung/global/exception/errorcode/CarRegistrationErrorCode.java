@@ -12,6 +12,7 @@ public enum CarRegistrationErrorCode implements ErrorCode {
     // ✅ 차량 관련 오류
     CAR_NOT_FOUND(HttpStatus.NOT_FOUND, "등록된 차량이 없습니다."),
     CAR_ALREADY_REGISTERED(HttpStatus.CONFLICT, "이미 등록된 차량이 있습니다."),
+    FULL_CAPACITY(HttpStatus.BAD_REQUEST, "차량 공유 정원이 이미 다 찼습니다"),
     
     // ✅ 권한 관련 오류
     ROLE_NOT_MODIFY(HttpStatus.FORBIDDEN, "차량 정보 수정 권한이 없습니다."),
