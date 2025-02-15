@@ -11,7 +11,7 @@ import com.hifive.bururung.domain.taxi.dto.TaxiShareResponse;
 
 public class TaxiShareJoinAction {
 	
-	private static final Long OPERATORID = 42L; // 고정값
+	private static final Long OPERATORID = 0L; // 고정값
 
 	// 참여 관련 알림 보내기
 	public static Notification getTaxiShareJoinNotiInfo(TaxiShareResponse taxiShareResponse,
