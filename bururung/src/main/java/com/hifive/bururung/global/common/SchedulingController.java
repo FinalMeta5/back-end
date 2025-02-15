@@ -28,7 +28,7 @@ public class SchedulingController {
 	@Autowired
 	INotificationService notificationServie;
 	
-	private static final Long OPERATORID = 42L; // 고정값
+	private static final Long OPERATORID = 0L; // 고정값
 	
 	@Scheduled(cron = "0 31 18 * * ?")
 	public ResponseEntity<Void> sendCarShareReviewNotification(){
