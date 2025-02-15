@@ -41,7 +41,7 @@ public class SecurityConfig {
 				.requestMatchers("/api/member/find-email").permitAll().requestMatchers("/api/member/check-nickname")
 				.permitAll().requestMatchers("/api/member/change-password").permitAll()
 				.requestMatchers("/api/car-registration/**").authenticated() // 차량 등록 API는 인증 필요
-				.requestMatchers("/error").permitAll().requestMatchers("/api/car-share/**").hasRole("DRIVER")
+				.requestMatchers("/api/car-share/**").hasRole("DRIVER")
 				.requestMatchers("/api/carshare/registration/available-list").permitAll()
 				.requestMatchers("/api/taxi/**").permitAll().requestMatchers("/api/carshare/registration").permitAll()
 				.requestMatchers("/api/car-share/register").hasRole("DRIVER").requestMatchers("/api/car-shar/my-list")
@@ -51,6 +51,7 @@ public class SecurityConfig {
 				.requestMatchers("/api/car-share/participants/**").permitAll()
 				.requestMatchers("/api/carshare/registration/**").permitAll()
 				.requestMatchers("/wss/**").permitAll()
+				.requestMatchers("/actuator/health").permitAll() 
 
 				.anyRequest().authenticated()
 //                      .requestMatchers("/**").permitAll()
@@ -58,7 +59,6 @@ public class SecurityConfig {
 		).csrf(csrf -> csrf.disable()) // CSRF 비활성화
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.cors(Customizer.withDefaults()).formLogin(formLogin -> formLogin.disable())
-				.cors(Customizer.withDefaults())
 				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.exceptionHandling(handler -> handler.authenticationEntryPoint(entryPoint));
 

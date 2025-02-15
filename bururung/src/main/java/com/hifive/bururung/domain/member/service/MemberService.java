@@ -60,7 +60,7 @@ public class MemberService implements IMemberService {
 				.email(signupRequest.getEmail())
 				.gender(signupRequest.getGender())
 				.name(signupRequest.getName())
-				.roleName("ROLE_USER")
+				.roleName("USER")
 				.password(passwordEncoder.encode(signupRequest.getPassword()))
 				.phone(signupRequest.getPhone())
 				.nickname(signupRequest.getNickname())
