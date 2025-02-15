@@ -9,14 +9,14 @@ import org.springframework.context.annotation.Configuration;
 public class WebConfig {
 
     @Bean
-    public ErrorPageFilter errorPageFilter() {
+    public ErrorPageFilter customErrorPageFilter() {
         return new ErrorPageFilter();
     }
 
     @Bean
-    public FilterRegistrationBean<ErrorPageFilter> disableErrorPageFilter(ErrorPageFilter filter) {
-        FilterRegistrationBean<ErrorPageFilter> filterRegistrationBean = new FilterRegistrationBean<>(filter);
-        filterRegistrationBean.setEnabled(false);
-        return filterRegistrationBean;
+    public FilterRegistrationBean<ErrorPageFilter> disableErrorPageFilter(ErrorPageFilter customErrorPageFilter) {
+        FilterRegistrationBean<ErrorPageFilter> bean = new FilterRegistrationBean<>(customErrorPageFilter);
+        bean.setEnabled(false);
+        return bean;
     }
 }
