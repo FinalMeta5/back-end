@@ -17,23 +17,19 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
-	private final HandlerExceptionResolver resolver;
-	
-	public JwtAuthenticationEntryPoint(@Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
-		this.resolver = resolver;
-	}
-	
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {
-		Exception exception = (Exception) request.getAttribute("exception");
-		if(exception == null) {
-			exception = new CustomException(MemberErrorCode.UNAUTHORIZIED);
-		}
-		resolver.resolveException(request, response, null, exception);
-		
-		return;
-	}
-	
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
+
+        String responseBody = """
+            {
+                "code": "UNAUTHORIZED",
+                "message": "인증이 필요합니다.",
+                "status": 401
+            }
+            """;
+        response.getWriter().write(responseBody);
+	}	
 }
