@@ -4,18 +4,27 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinRequest;
 import com.hifive.bururung.domain.taxi.dto.TaxiShareJoinResponse;
+import com.hifive.bururung.domain.taxi.entity.TaxiShareEntity;
 import com.hifive.bururung.domain.taxi.repository.ITaxiShareJoinRepository;
+import com.hifive.bururung.domain.taxi.repository.TaxiShareRepository;
 import com.hifive.bururung.global.exception.CustomException;
+import com.hifive.bururung.global.exception.errorcode.TaxiShareErrorCode;
 import com.hifive.bururung.global.exception.errorcode.TaxiShareJoinErrorCode;
 
 @Service
 public class TaxiShareJoinService implements ITaxiShareJoinService {
 	@Autowired
-	ITaxiShareJoinRepository taxiShareJoinRepository;
+	private ITaxiShareJoinRepository taxiShareJoinRepository;
+	@Autowired
+	private TaxiShareRepository taxiShareRepository;
 	
 	@Override
 	public int getJoinCountByTaxiShareId(Long taxiShareId) {
@@ -89,5 +98,26 @@ public class TaxiShareJoinService implements ITaxiShareJoinService {
 		}
 	}
 
-
+	@Retryable(
+			retryFor = {ObjectOptimisticLockingFailureException.class },
+			maxAttempts = 3,
+			backoff = @Backoff(delay = 100)
+	)
+	@Override
+	@Transactional
+	public void join(TaxiShareJoinRequest taxiShareJoinRequest) {
+		TaxiShareEntity taxiShare = taxiShareRepository.findByIdWithLock(taxiShareJoinRequest.getTaxiShareId())
+		.orElseThrow(() -> new CustomException(TaxiShareErrorCode.TAXI_SHARE_NOT_FOUND));
+		int joinCount = taxiShareJoinRepository.getJoinCountByTaxiShareId(taxiShareJoinRequest.getTaxiShareId());
+		
+		if(joinCount >= taxiShare.getPassengersNum()) {
+			throw new CustomException(TaxiShareJoinErrorCode.FULL_CAPACITY);
+		}
+		
+		// 크레딧 차감
+		insertCreditByTaxi(2, taxiShareJoinRequest.getMemberId());
+		
+		// 택시 조인 insert(참여)
+		insertTaxiShareJoin(taxiShareJoinRequest);
+	}
 }

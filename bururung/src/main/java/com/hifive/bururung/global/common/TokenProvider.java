@@ -63,9 +63,15 @@ public class TokenProvider implements InitializingBean{
     }
 	
 	public String createRefreshToken(Authentication authentication) {
+        String roleName = authentication.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("USER");
         long now = (new Date()).getTime();
         
         return Jwts.builder()
+        		.subject(authentication.getName())
+        		.claim("ROLE_NAME", roleName)
                 .signWith(key)
                 .expiration(new Date(now + refreshTokenValidity * 1000))
                 .compact();

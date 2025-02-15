@@ -17,4 +17,5 @@ public interface ITaxiShareJoinService {
 	int findLeftoverCredit(Long memberId);
 	List<TaxiShareJoinResponse> getTaxiShareByMemberIdOnToday(Long memberId);
 	List<HashMap<String, Object>> getCarShareCountByMemberIdAndSysdate();
+	void join(TaxiShareJoinRequest taxiShareJoinRequest);
 }
