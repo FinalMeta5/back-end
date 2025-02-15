@@ -14,6 +14,7 @@ import com.hifive.bururung.domain.member.dto.LoginResponse;
 import com.hifive.bururung.domain.member.dto.SignupRequest;
 import com.hifive.bururung.domain.member.dto.TokenDTO;
 import com.hifive.bururung.domain.member.entity.Member;
+import com.hifive.bururung.domain.member.entity.MemberState;
 import com.hifive.bururung.domain.member.repository.MemberRepository;
 import com.hifive.bururung.global.common.RedisUtil;
 import com.hifive.bururung.global.common.TokenProvider;
@@ -46,7 +47,7 @@ public class MemberService implements IMemberService {
 		String accessToken = tokenProvider.createAccessToken(authentication);
 		String refreshToken = tokenProvider.createRefreshToken(authentication);
 		
-		saveRefreshToken(authentication.getName(), refreshToken);
+		saveRefreshToken(Long.parseLong(authentication.getName()), refreshToken);
 		
 		return new TokenDTO(accessToken, refreshToken);
 	}
@@ -96,6 +97,40 @@ public class MemberService implements IMemberService {
 		return member.getMemberId();
 	}
 	
+	@Override
+	public void logout(Long memberId) {
+		if(redisUtil.getData(REFRESH_TOKEN_PREFIX + memberId) != null) {
+			redisUtil.deleteData(REFRESH_TOKEN_PREFIX + memberId);
+		}
+	}
+		
+	@Override
+	public String reissue(Authentication authentication, String refreshToken) {
+		Long memberId = Long.parseLong(authentication.getName());
+		if(!redisUtil.getData(REFRESH_TOKEN_PREFIX + memberId).equals(refreshToken)) {
+			throw new CustomException(MemberErrorCode.MALFORMED_TOKEN);
+		}
+		
+		String newAccessToken = tokenProvider.createAccessToken(authentication);
+		
+		return newAccessToken;
+	}
+	
+	@Transactional
+	@Override
+	public Long delete(Long memberId, String password) {
+	    Member member = memberRepository.findById(memberId)
+	    		.orElseThrow(() -> new CustomException(MemberErrorCode.USER_NOT_FOUND));
+	    
+        if(!passwordCheck(password, member.getPassword())) {
+            throw new CustomException(MemberErrorCode.WRONG_PASSWORD);
+        }
+        
+        member.changeState(MemberState.INACTIVE);
+        
+        return member.getMemberId();
+	}
+	
 	public LoginResponse getLoginResponse(String email) {
 		Member member = memberRepository.findByEmail(email)
 		.orElseThrow(() -> new CustomException(MemberErrorCode.USER_NOT_FOUND));
@@ -107,7 +142,12 @@ public class MemberService implements IMemberService {
 		return memberRepository.findByNickname(nickname).isPresent();
 	}
 	
-	private void saveRefreshToken(String email, String refreshToken) {
-		redisUtil.setData(REFRESH_TOKEN_PREFIX + email, refreshToken, Duration.ofSeconds(refreshTokenValidity));
+	private void saveRefreshToken(Long memberId, String refreshToken) {
+		redisUtil.setData(REFRESH_TOKEN_PREFIX + memberId, refreshToken, Duration.ofSeconds(refreshTokenValidity));
 	}
+	
+    private boolean passwordCheck(String password, String encodedPassword) {
+        return passwordEncoder.matches(password, encodedPassword);
+    }
+
 }
