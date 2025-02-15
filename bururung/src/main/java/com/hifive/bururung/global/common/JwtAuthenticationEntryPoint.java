@@ -32,6 +32,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 			exception = new CustomException(MemberErrorCode.UNAUTHORIZIED);
 		}
 		resolver.resolveException(request, response, null, exception);
+		
+		return;
 	}
 	
 }
