@@ -18,7 +18,7 @@ public class LogFileScheduler {
     private final S3Uploader s3Uploader;
     private final String logDir = "logs/";
 
-    @Scheduled(cron = "0 51 14 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void uploadLogsToS3() {
         File rootDir = new File(logDir);
         if (!rootDir.exists()) {
